@@ -1,9 +1,156 @@
 let canvas = document.getElementById("myCanvas");
 let ctx = canvas.getContext("2d");
 let mouseClick = false;
-let numBalls = 60
 
-let ballArray = fillBallArray(numBalls)
+let ballValues = [
+    blueBall = {
+        ballName: "blue",
+        ballCol: 'blue',
+        ballRad: 10,
+        ballSpeed: 3,
+        counter: 50,
+        boomUpEnd: 25,
+        boomDownStart: 25,
+        boomUpSize: 0.5,
+        boomDownSize: 0.5,
+        chainMult: 0,
+        pointsValue: 100,
+        chainRad: 0,
+        boomed: false,
+        faded: false
+    },
+    redBall = {
+        ballName: "red",
+        ballCol: 'red',
+        ballRad: 10,
+        ballSpeed: 1,
+        counter: 200,
+        boomUpEnd: 150,
+        boomDownStart: 50,
+        boomUpSize: 0.5,
+        boomDownSize: 0.5,
+        chainMult: 2,
+        pointsValue: 500,
+        chainRad: 100,
+        boomed: false,
+        faded: false
+    },
+    orangeBall = {
+        ballName: "orange",
+        ballCol: 'orange',
+        ballRad: 10,
+        ballSpeed: 2,
+        counter: 200,
+        boomUpEnd: 150,
+        boomDownStart: 50,
+        boomUpSize: 0.5,
+        boomDownSize: 0.5,
+        chainMult: 2,
+        pointsValue: 200,
+        chainRad: 0,
+        boomed: false,
+        faded: false
+    },
+    node = {
+        ballName: "node",
+        ballCol: 'orangered',
+        ballRad: 10,
+        counter: 400,
+        boomUpEnd: 30,
+        boomDownStart: 100,
+        boomUpSize: 0.5,
+        boomDownSize: 0.5,
+        chainMult: 2,
+        pointsValue: 1000,
+        chainRad: 100,
+        boomed: false,
+        faded: false
+    },
+    playerShot = {
+        ballName: "playerShot",
+        ballCol: 'black',
+        ballRad: 25,
+        counter: 50,
+        boomUpEnd: 25,
+        boomDownStart: 25,
+        boomUpSize: 1,
+        boomDownSize: 1,
+        chainMult: 0,
+        pointsValue: 0,
+        chainRad: 0,
+        boomed: false,
+        faded: false
+    }
+]
+
+let levelBallCount = [
+    level1 = {
+        blue: 30,
+        red: 10,
+        orange: 10
+    }
+]
+
+let ballArray = fillBallArray(levelBallCount[0])
+
+console.log(ballArray)
+
+function fillBallArray(ballCountObj){
+    let ballArray = []
+    let blueCount = ballCountObj.blue
+    let redCount = ballCountObj.red
+    let orangeCount = ballCountObj.orange
+
+    for (let i = 0; i < blueCount; i++) {
+        let newBall = ballGenerator(ballValues[0])
+        ballArray.push(newBall)
+    }
+    for (let i = 0; i < redCount; i++) {
+        let newBall = ballGenerator(ballValues[1])
+        ballArray.push(newBall)
+    }
+    for (let i = 0; i < orangeCount; i++) {
+        let newBall = ballGenerator(ballValues[2])
+        ballArray.push(newBall)
+    }
+
+    return ballArray
+}
+
+function ballGenerator(ballValueObj){
+
+    let ballX = Math.floor(Math.random() * 700) + 10
+    let ballY = Math.floor(Math.random() * 700) + 10
+    let ballAngle = Math.floor(Math.random() * 360)
+    let ballSpeed = Math.floor(Math.random() * ballValueObj.ballSpeed) + 2
+    let ballDX = Math.cos(ballAngle) * ballSpeed + 0.2
+    let ballDY = Math.sin(ballAngle) * ballSpeed + 0.2
+
+    newBall = new BallConstructor(ballValueObj, ballX, ballY, ballDX, ballDY)
+    return newBall
+}
+
+function BallConstructor(ballValueObj, x, y, dx, dy) {
+    this.ballX = x
+    this.ballY = y
+    this.ballDX = dx
+    this.ballDY = dy
+
+    this.ballCol = ballValueObj.ballCol
+    this.ballRad = ballValueObj.ballRad
+    this.counter = ballValueObj.counter
+    this.boomUpEnd = ballValueObj.boomUpEnd
+    this.boomDownStart = ballValueObj.boomDownStart
+    this.boomUpSize = ballValueObj.boomUpSize
+    this.boomDownSize = ballValueObj.boomDownSize
+    this.chainMult = ballValueObj.chainMult
+    this.pointsValue = ballValueObj.pointsValue
+    this.chainRad = ballValueObj.chainRad
+
+    this.boomed = false
+    this.faded = false
+}
+
 let boomBallsArray = []
 
 //player cursor definition
@@ -89,22 +236,22 @@ function draw() {
         })
     }
 
-    //adjust boomball size and draw boomballs
+    // adjust boomball size and draw boomballs
 
     if (mouseClick) {
         boomBallsArray.forEach(function(boomObj){
             if (!boomObj.faded) {
 
-                boomObj.counter += 1
+                boomObj.counter -= 1
                 let boomCount = boomObj.counter
 
-                if (boomCount >= 100) {
+                if (boomCount <= 0) {
                     boomObj.ballRad = 0
                     boomObj.faded = true
-                } else if ((boomCount >= 50) && (boomCount <= 100)) {
-                    boomObj.ballRad -= 0.4
-                } else if (boomCount < 50) {
-                    boomObj.ballRad += 0.4
+                } else if (boomCount <= boomObj.boomDownStart) {
+                    boomObj.ballRad -= boomObj.boomDownSize
+                } else if (boomCount >= boomObj.boomUpEnd) {
+                    boomObj.ballRad += boomObj.boomUpSize
                 }
 
                 let ballX = boomObj.ballX
@@ -146,43 +293,6 @@ function draw() {
     //
     // })
 
-}
-
-function fillBallArray(count){
-    let ballArray = []
-    for (let i = 0; i < count; i++) {
-        let newBall = ballGenerator()
-        ballArray.push(newBall)
-    }
-    return ballArray
-}
-
-function ballGenerator(){
-    let colorArray = ['red','green','blue','orange','purple','brown']
-    let ballAngle = Math.floor(Math.random() * 360)
-    let ballSpeed = Math.floor(Math.random() * 3) +2
-
-    let ballX = Math.floor(Math.random() * 700) + 10
-    let ballY = Math.floor(Math.random() * 700) + 10
-    let ballCol = colorArray[Math.floor(Math.random() * 6)]
-    let ballDX = Math.cos(ballAngle) * ballSpeed + 0.2
-    let ballDY = Math.sin(ballAngle) * ballSpeed + 0.2
-    let ballRad = 10
-
-    newBall = new BallConstructor(ballX, ballY, ballCol, ballDX, ballDY, ballRad)
-    return newBall
-}
-
-function BallConstructor(x, y, col, dx, dy, rad){
-    this.ballX = x
-    this.ballY = y
-    this.ballCol = col
-    this.ballDX = dx
-    this.ballDY = dy
-    this.ballRad = rad
-    this.counter = 0
-    this.boomed = false
-    this.faded = false
 }
 
 function drawBall(ballX, ballY, ballCol, ballRad) {
@@ -259,3 +369,4 @@ function mouseClickHandler() {
 
 
 setInterval(draw, 16.67);
+
