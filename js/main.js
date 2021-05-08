@@ -163,7 +163,7 @@ function ballGenerator(){
     let ballSpeed = Math.floor(Math.random() * 3) +2
 
     let ballX = Math.floor(Math.random() * 700) + 10
-    let ballY = Math.floor(Math.random() * 460) + 10
+    let ballY = Math.floor(Math.random() * 700) + 10
     let ballCol = colorArray[Math.floor(Math.random() * 6)]
     let ballDX = Math.cos(ballAngle) * ballSpeed + 0.2
     let ballDY = Math.sin(ballAngle) * ballSpeed + 0.2
