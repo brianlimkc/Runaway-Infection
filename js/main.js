@@ -1,10 +1,162 @@
 let canvas = document.getElementById("myCanvas");
 let ctx = canvas.getContext("2d");
 let mouseClick = false;
-let numBalls = 60
+let gameCounter = 0;
 
-let ballArray = fillBallArray(numBalls)
+let ballValues = [
+    blueBall = {
+        ballName: "blue",
+        ballCol: '#35b5ff',
+        ballRad: 10,
+        ballSpeed: 3,
+        counter: 1,
+        boomUpEnd: 1,
+        boomDownStart: 1,
+        boomUpSize: 0,
+        boomDownSize: 0,
+        chainMult: false,
+        pointsValue: 100,
+        chainRad: 0,
+        boomed: false,
+        faded: false
+    },
+    redBall = {
+        ballName: "red",
+        ballCol: '#ff479c',
+        ballRad: 10,
+        ballSpeed: 1,
+        counter: 50,
+        boomUpEnd: 25,
+        boomDownStart: 25,
+        boomUpSize: 0.5,
+        boomDownSize: 0.5,
+        chainMult: false,
+        pointsValue: 500,
+        chainRad: 100,
+        boomed: false,
+        faded: false
+    },
+    orangeBall = {
+        ballName: "orange",
+        ballCol: 'orange',
+        ballRad: 10,
+        ballSpeed: 1,
+        counter: 50,
+        boomUpEnd: 25,
+        boomDownStart: 25,
+        boomUpSize: 0.5,
+        boomDownSize: 0.5,
+        chainMult: false,
+        pointsValue: 200,
+        chainRad: 100,
+        boomed: false,
+        faded: false
+    },
+    node = {
+        ballName: "node",
+        ballCol: 'orangered',
+        ballRad: 10,
+        counter: 400,
+        boomUpEnd: 30,
+        boomDownStart: 100,
+        boomUpSize: 0.5,
+        boomDownSize: 0.5,
+        chainMult: false,
+        pointsValue: 1000,
+        chainRad: 100,
+        boomed: false,
+        faded: false
+    },
+    playerShot = {
+        ballName: "playerShot",
+        ballCol: 'black',
+        ballRad: 25,
+        counter: 1,
+        boomUpEnd: 1,
+        boomDownStart: 1,
+        boomUpSize: 0,
+        boomDownSize: 0,
+        chainMult: false,
+        pointsValue: 0,
+        chainRad: 0,
+        boomed: false,
+        faded: false
+    }
+]
+
+let levelBallCount = [
+    level1 = {
+        blue: 10,
+        red: 0,
+        orange: 0,
+        maxBlue: 50,
+        maxRed: 20,
+        maxOrange: 3
+    }
+]
+
+let ballArray = fillBallArray(levelBallCount[0])
+// console.log(ballArray)
+
+function fillBallArray(ballCountObj){
+    let ballArray = []
+    let blueCount = ballCountObj.blue
+    let redCount = ballCountObj.red
+    let orangeCount = ballCountObj.orange
+
+    for (let i = 0; i < blueCount; i++) {
+        let newBall = ballGenerator(ballValues[0])
+        ballArray.push(newBall)
+    }
+    for (let i = 0; i < redCount; i++) {
+        let newBall = ballGenerator(ballValues[1])
+        ballArray.push(newBall)
+    }
+    for (let i = 0; i < orangeCount; i++) {
+        let newBall = ballGenerator(ballValues[2])
+        ballArray.push(newBall)
+    }
+
+    return ballArray
+}
+
+function ballGenerator(ballValueObj){
+
+    let ballX = Math.floor(Math.random() * (canvas.width-20)) + 10
+    let ballY = Math.floor(Math.random() * (canvas.height-20)) + 10
+    let ballAngle = Math.floor(Math.random() * 360)
+    let ballSpeed = Math.floor(Math.random() * ballValueObj.ballSpeed) + ballValueObj.ballSpeed/2
+    let ballDX = Math.cos(ballAngle) * ballSpeed
+    let ballDY = Math.sin(ballAngle) * ballSpeed
+
+    newBall = new BallConstructor(ballValueObj, ballX, ballY, ballDX, ballDY)
+    return newBall
+}
+
+function BallConstructor(ballValueObj, x, y, dx, dy) {
+    this.ballX = x
+    this.ballY = y
+    this.ballDX = dx
+    this.ballDY = dy
+
+    this.ballCol = ballValueObj.ballCol
+    this.ballRad = ballValueObj.ballRad
+    this.counter = ballValueObj.counter
+    this.boomUpEnd = ballValueObj.boomUpEnd
+    this.boomDownStart = ballValueObj.boomDownStart
+    this.boomUpSize = ballValueObj.boomUpSize
+    this.boomDownSize = ballValueObj.boomDownSize
+    this.chainMult = ballValueObj.chainMult
+    this.pointsValue = ballValueObj.pointsValue
+    this.chainRad = ballValueObj.chainRad
+    this.ballName = ballValueObj.ballName
+
+    this.boomed = false
+    this.faded = false
+}
+
 let boomBallsArray = []
+let chainArray = []
 
 //player cursor definition
 
@@ -12,7 +164,7 @@ let pCursor = {
     pX : canvas.width/2,
     pY : canvas.height/2,
     pCol : 'black',
-    pRad : 70,
+    pRad : 25,
     pFill: false,
     pNotClicked: true,
     pCounter: 0,
@@ -22,9 +174,20 @@ let pCursor = {
 
 // main function
 function draw() {
+
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    ballArray.forEach(function (ballObj){
+    if (gameCounter > 1200) {
+        gameCounter === 1
+    }
+
+    gameCounter++
+
+    replenishBalls(gameCounter)
+
+    drawLine(ballArray)
+
+    ballArray.forEach(function (ballObj) { // draw balls and move balls
         if (!ballObj.boomed) {
 
             let ballX = ballObj.ballX
@@ -47,64 +210,91 @@ function draw() {
             ballObj.ballX += ballObj.ballDX;
             ballObj.ballY += ballObj.ballDY;
         }
-        })
+    })
 
-    drawCursor(pCursor)
+    drawCursor(pCursor) // draws cursor
 
     // collision check
-    if (mouseClick) {
-        ballArray.forEach(function(ballObj){
-            if (!ballObj.boomed) {
-                let aX = ballObj.ballX
-                let aY = ballObj.ballY
-                let aRad = ballObj.ballRad
 
-                let bX = pCursor.pX
-                let bY = pCursor.pY
-                let bRad = pCursor.pRad
-
+        if (mouseClick) {
+            boomBallsArray.forEach(function(boomObj){
                 let boomedFlag = false
+                let playerShot = false
 
-                if (!(pCursor.pfaded) && (collideCheck(aX, aY, aRad, bX, bY, bRad))) {
-                    boomedFlag = true
+                if (boomObj.ballName === "playerShot") {
+                    playerShot = true
                 }
 
-                boomBallsArray.forEach(function (boomObj){
-                    if (!boomObj.faded) {
-                        let boomX = boomObj.ballX
-                        let boomY = boomObj.ballY
-                        let boomRad = boomObj.ballRad
+                if (!boomObj.faded) {
+                    let boomX = boomObj.ballX
+                    let boomY = boomObj.ballY
+                    let boomRad = boomObj.ballRad
 
-                        if (collideCheck(aX, aY, aRad, boomX, boomY, boomRad)) {
-                            boomedFlag = true
+                    chainArray.forEach(function (chainObj) {
+                        if (!chainObj.boomed) {
+                            let aX = chainObj.ballX
+                            let aY = chainObj.ballY
+                            let aRad = chainObj.chainRad
+                            if (playerShot) {
+                                aRad = chainObj.ballRad
+                            }
+
+
+                            if (collideCheck(aX, aY, aRad, boomX, boomY, boomRad)) {
+                                chainObj.boomed = true
+                                chainObj.ballRad = chainObj.chainRad - 5
+                                boomBallsArray.push(chainObj)
+                            }
                         }
-                    }
-                })
 
-                if (boomedFlag){
-                    ballObj.boomed = true
-                    boomBallsArray.push(ballObj)
+                    })
+
+                    ballArray.forEach(function (ballObj) {
+                        if (!ballObj.boomed) {
+                            let aX = ballObj.ballX
+                            let aY = ballObj.ballY
+                            let aRad = ballObj.ballRad
+                            let orangeFlag = false
+                            if (ballObj.ballName === 'orange') {
+                                orangeFlag = true
+                            }
+
+                            if (playerShot && orangeFlag && (collideCheck(aX, aY, aRad, boomX, boomY, boomRad))) {
+                                ballObj.ballName = "red"
+                                ballObj.ballCol = '#ff479c'
+                            } else if (collideCheck(aX, aY, aRad, boomX, boomY, boomRad)) {
+                                ballObj.boomed = true
+                                boomBallsArray.push(ballObj)
+                            }
+                        }
+
+                    })
                 }
-            }
-        })
-    }
 
-    //adjust boomball size and draw boomballs
+                // if (boomedFlag) {
+                //     ballObj.boomed = true
+                //     boomBallsArray.push(ballObj)
+                // }
+
+            })
+        }
+
+    // adjust boomball size and draw boomballs
 
     if (mouseClick) {
-        boomBallsArray.forEach(function(boomObj){
+        boomBallsArray.forEach(function (boomObj) {
             if (!boomObj.faded) {
 
-                boomObj.counter += 1
+                boomObj.counter -= 1
                 let boomCount = boomObj.counter
 
-                if (boomCount >= 100) {
+                if (boomCount <= 0) {
                     boomObj.ballRad = 0
                     boomObj.faded = true
-                } else if ((boomCount >= 50) && (boomCount <= 100)) {
-                    boomObj.ballRad -= 0.4
-                } else if (boomCount < 50) {
-                    boomObj.ballRad += 0.4
+                } else if (boomCount <= boomObj.boomDownStart) {
+                    boomObj.ballRad -= boomObj.boomDownSize
+                } else if (boomCount >= boomObj.boomUpEnd) {
+                    boomObj.ballRad += boomObj.boomUpSize
                 }
 
                 let ballX = boomObj.ballX
@@ -117,73 +307,31 @@ function draw() {
         })
     }
 
-    let boomLength = boomBallsArray.length
 
-    for (let i = boomLength; i < 0; i--) {
-          if (boomBallsArray[i].faded) {
-              boomBallsArray.splice(i,1)
-          }
+    if (boomBallsArray.length >= 1) {
+        let boomLength = boomBallsArray.length - 1
+        for (let i = boomLength; i >= 0; i--) {
+            if (boomBallsArray[i].faded) {
+                boomBallsArray.splice(i, 1)
+                //console.log('removed faded')
+            }
+        }
     }
 
-    let ballLength = ballArray.length
-
-    for (let i = ballLength; i < 0; i--) {
-        if (ballArray[i].boomed) {
-                  ballArray.splice(i,1)
-              }
+    if (ballArray.length >= 1) {
+        let ballLength = ballArray.length - 1
+        for (let i = ballLength; i >= 0; i--) {
+            if (ballArray[i].boomed) {
+                ballArray.splice(i, 1)
+                //console.log('removed boomed')
+            }
+        }
     }
 
-    // ballArray.forEach(function(ballObj,id){
-    //   if (ballObj.boomed) {
-    //       ballArray.splice(id,1)
-    //   }
-    // })
-    //
-    // boomBallsArray.forEach(function(boomObj, id){
-    //   if (boomObj.faded) {
-    //       boomBallsArray.splice(id,1)
-    //   }
-    //
-    // })
+    // console.log(`BallArray length: ${ballArray.length} BoomArrayLength: ${boomBallsArray.length}`)
+} // end of draw function
 
-}
 
-function fillBallArray(count){
-    let ballArray = []
-    for (let i = 0; i < count; i++) {
-        let newBall = ballGenerator()
-        ballArray.push(newBall)
-    }
-    return ballArray
-}
-
-function ballGenerator(){
-    let colorArray = ['red','green','blue','orange','purple','brown']
-    let ballAngle = Math.floor(Math.random() * 360)
-    let ballSpeed = Math.floor(Math.random() * 3) +2
-
-    let ballX = Math.floor(Math.random() * 700) + 10
-    let ballY = Math.floor(Math.random() * 460) + 10
-    let ballCol = colorArray[Math.floor(Math.random() * 6)]
-    let ballDX = Math.cos(ballAngle) * ballSpeed + 0.2
-    let ballDY = Math.sin(ballAngle) * ballSpeed + 0.2
-    let ballRad = 10
-
-    newBall = new BallConstructor(ballX, ballY, ballCol, ballDX, ballDY, ballRad)
-    return newBall
-}
-
-function BallConstructor(x, y, col, dx, dy, rad){
-    this.ballX = x
-    this.ballY = y
-    this.ballCol = col
-    this.ballDX = dx
-    this.ballDY = dy
-    this.ballRad = rad
-    this.counter = 0
-    this.boomed = false
-    this.faded = false
-}
 
 function drawBall(ballX, ballY, ballCol, ballRad) {
     ctx.beginPath();
@@ -195,19 +343,6 @@ function drawBall(ballX, ballY, ballCol, ballRad) {
 
 function drawCursor() {
 
-    if (!(pCursor.pNotClicked)) {
-        pCursor.pCounter += 1
-        let boomCount = pCursor.pCounter
-
-        if (boomCount >= 100) {
-            pCursor.pRad = 0
-            pCursor.pfaded = true
-            } else if ((boomCount > 30) && (boomCount < 100)) {
-                pCursor.pRad -= 1
-            }
-        }
-
-
         let pX = pCursor.pX
         let pY = pCursor.pY
         let pCol = pCursor.pCol
@@ -218,10 +353,6 @@ function drawCursor() {
         ctx.lineWidth = 1;
         ctx.strokeStyle = pCol;
         ctx.stroke();
-        if (pCursor.pFill) {
-            ctx.fillStyle = pCol;
-            ctx.fill();
-        }
         ctx.closePath();
 
 }
@@ -233,9 +364,100 @@ function collideCheck(aX,aY,aRad,bX,bY,bRad){
     return ((xDist*xDist+yDist*yDist)<=(sumRad*sumRad))
 }
 
+function drawLine(ballArrayTemp) {
+
+    let detonateArray1 = []
+    chainArray = []
+
+    ballArrayTemp.forEach(function(obj){
+        if (obj.ballName === 'red') {
+            detonateArray1.push(obj)
+            // let detonateObj = {}
+            // detonateObj.ballX = obj.ballX
+            // detonateObj.ballY = obj.ballY
+            // detonateObj.ballRad = obj.ballRad
+            // detonateObj.chainRad = obj.chainRad
+            // detonateArray1.push(detonateObj)
+        }
+    })
+
+    detonateArray1.forEach(function(obj1){
+        let aX = obj1.ballX
+        let aY = obj1.ballY
+        let aRad = obj1.chainRad
+        let chainFlag = false
+
+
+        detonateArray1.forEach(function(obj2){
+            let bX = obj2.ballX
+            let bY = obj2.ballY
+            let bRad = obj2.chainRad
+
+            if (!((aX===bX)&&(aY===bY))) {
+                if (collideCheck(aX, aY, aRad, bX, bY, bRad)) {
+                    chainFlag = true
+                    ctx.beginPath();
+                    ctx.moveTo(aX, aY);
+                    ctx.lineTo(bX, bY);
+                    ctx.lineWidth = 2;
+                    ctx.strokeStyle = '#ff479c';
+                    ctx.stroke();
+                    ctx.closePath();
+                }
+            }
+        })
+        if (chainFlag) {
+            obj1.chainMult = true
+            chainArray.push(obj1)
+                    }
+
+    })
+    //console.log(chainArray.length)
+
+}
+
+function replenishBalls(gameCounter) {
+
+    let blueCount = 0
+    let redCount = 0
+    let orangeCount = 0
+    let maxBlue = levelBallCount[0].maxBlue
+    let maxRed = levelBallCount[0].maxRed
+    let maxOrange = levelBallCount[0].maxOrange
+
+    ballArray.forEach(function(obj){
+        if (obj.ballName==='blue') {blueCount++}
+        if (obj.ballName==='red') {redCount++}
+        if (obj.ballName==='orange') {orangeCount++}
+    })
+
+    console.log(redCount+' '+maxRed)
+
+
+    if (gameCounter%300===0) {
+        if (redCount < maxRed) {
+            let newBall = ballGenerator(ballValues[1])
+            ballArray.push(newBall)
+        }
+    }
+
+    if (gameCounter%50===0) {
+        if (orangeCount < maxOrange) {
+            let newBall = ballGenerator(ballValues[2])
+            ballArray.push(newBall)
+        }
+    }
+
+    if (gameCounter%20===0) {
+        if (blueCount < maxBlue) {
+            let newBall = ballGenerator(ballValues[0])
+            ballArray.push(newBall)
+        }
+    }
+}
+
+
 // Event listeners
-
-
 document.addEventListener("mousemove", mouseMoveHandler, false);
 document.addEventListener("mousedown", mouseClickHandler, false);
 
@@ -251,11 +473,12 @@ function mouseMoveHandler(e) {
 }
 
 function mouseClickHandler() {
-    document.removeEventListener("mousemove", mouseMoveHandler, false);
     mouseClick = true;
-    pCursor.pFill = true;
-    pCursor.pNotClicked = false;
+    let playerShotObj = new BallConstructor(ballValues[4],pCursor.pX,pCursor.pY,0,0)
+    boomBallsArray.push(playerShotObj)
+    console.log(playerShotObj)
 }
 
 
-setInterval(draw, 16.67);
+setInterval(draw, 10);
+
