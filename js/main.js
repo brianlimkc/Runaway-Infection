@@ -1,19 +1,20 @@
 let canvas = document.getElementById("myCanvas");
 let ctx = canvas.getContext("2d");
 let mouseClick = false;
+let gameCounter = 0;
 
 let ballValues = [
     blueBall = {
         ballName: "blue",
         ballCol: '#35b5ff',
         ballRad: 10,
-        ballSpeed: 4,
-        counter: 50,
-        boomUpEnd: 25,
-        boomDownStart: 25,
-        boomUpSize: 0.5,
-        boomDownSize: 0.5,
-        chainMult: 0,
+        ballSpeed: 3,
+        counter: 1,
+        boomUpEnd: 1,
+        boomDownStart: 1,
+        boomUpSize: 0,
+        boomDownSize: 0,
+        chainMult: false,
         pointsValue: 100,
         chainRad: 0,
         boomed: false,
@@ -24,12 +25,12 @@ let ballValues = [
         ballCol: '#ff479c',
         ballRad: 10,
         ballSpeed: 1,
-        counter: 100,
-        boomUpEnd: 50,
-        boomDownStart: 50,
+        counter: 50,
+        boomUpEnd: 25,
+        boomDownStart: 25,
         boomUpSize: 0.5,
         boomDownSize: 0.5,
-        chainMult: 2,
+        chainMult: false,
         pointsValue: 500,
         chainRad: 100,
         boomed: false,
@@ -37,17 +38,17 @@ let ballValues = [
     },
     orangeBall = {
         ballName: "orange",
-        ballCol: '#fffb38',
+        ballCol: 'orange',
         ballRad: 10,
-        ballSpeed: 3,
-        counter: 100,
-        boomUpEnd: 50,
-        boomDownStart: 50,
+        ballSpeed: 1,
+        counter: 50,
+        boomUpEnd: 25,
+        boomDownStart: 25,
         boomUpSize: 0.5,
         boomDownSize: 0.5,
-        chainMult: 2,
+        chainMult: false,
         pointsValue: 200,
-        chainRad: 0,
+        chainRad: 100,
         boomed: false,
         faded: false
     },
@@ -60,7 +61,7 @@ let ballValues = [
         boomDownStart: 100,
         boomUpSize: 0.5,
         boomDownSize: 0.5,
-        chainMult: 2,
+        chainMult: false,
         pointsValue: 1000,
         chainRad: 100,
         boomed: false,
@@ -70,12 +71,12 @@ let ballValues = [
         ballName: "playerShot",
         ballCol: 'black',
         ballRad: 25,
-        counter: 50,
-        boomUpEnd: 25,
-        boomDownStart: 25,
-        boomUpSize: 1,
-        boomDownSize: 1,
-        chainMult: 0,
+        counter: 1,
+        boomUpEnd: 1,
+        boomDownStart: 1,
+        boomUpSize: 0,
+        boomDownSize: 0,
+        chainMult: false,
         pointsValue: 0,
         chainRad: 0,
         boomed: false,
@@ -85,14 +86,16 @@ let ballValues = [
 
 let levelBallCount = [
     level1 = {
-        blue: 30,
-        red: 10,
-        orange: 10
+        blue: 10,
+        red: 0,
+        orange: 0,
+        maxBlue: 50,
+        maxRed: 20,
+        maxOrange: 3
     }
 ]
 
 let ballArray = fillBallArray(levelBallCount[0])
-
 // console.log(ballArray)
 
 function fillBallArray(ballCountObj){
@@ -122,9 +125,9 @@ function ballGenerator(ballValueObj){
     let ballX = Math.floor(Math.random() * (canvas.width-20)) + 10
     let ballY = Math.floor(Math.random() * (canvas.height-20)) + 10
     let ballAngle = Math.floor(Math.random() * 360)
-    let ballSpeed = Math.floor(Math.random() * ballValueObj.ballSpeed * 1.2) + 2
-    let ballDX = Math.cos(ballAngle) * ballSpeed + 0.2
-    let ballDY = Math.sin(ballAngle) * ballSpeed + 0.2
+    let ballSpeed = Math.floor(Math.random() * ballValueObj.ballSpeed) + ballValueObj.ballSpeed/2
+    let ballDX = Math.cos(ballAngle) * ballSpeed
+    let ballDY = Math.sin(ballAngle) * ballSpeed
 
     newBall = new BallConstructor(ballValueObj, ballX, ballY, ballDX, ballDY)
     return newBall
@@ -153,6 +156,7 @@ function BallConstructor(ballValueObj, x, y, dx, dy) {
 }
 
 let boomBallsArray = []
+let chainArray = []
 
 //player cursor definition
 
@@ -160,7 +164,7 @@ let pCursor = {
     pX : canvas.width/2,
     pY : canvas.height/2,
     pCol : 'black',
-    pRad : 50,
+    pRad : 25,
     pFill: false,
     pNotClicked: true,
     pCounter: 0,
@@ -170,11 +174,20 @@ let pCursor = {
 
 // main function
 function draw() {
+
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    if (gameCounter > 1200) {
+        gameCounter === 1
+    }
+
+    gameCounter++
+
+    replenishBalls(gameCounter)
 
     drawLine(ballArray)
 
-    ballArray.forEach(function (ballObj) {
+    ballArray.forEach(function (ballObj) { // draw balls and move balls
         if (!ballObj.boomed) {
 
             let ballX = ballObj.ballX
@@ -199,37 +212,72 @@ function draw() {
         }
     })
 
-    drawCursor(pCursor)
+    drawCursor(pCursor) // draws cursor
 
     // collision check
-    if (mouseClick) {
-        ballArray.forEach(function (ballObj) {
-            if (!ballObj.boomed) {
-                let aX = ballObj.ballX
-                let aY = ballObj.ballY
-                let aRad = ballObj.ballRad + ballObj.chainRad
+
+        if (mouseClick) {
+            boomBallsArray.forEach(function(boomObj){
                 let boomedFlag = false
-                let chainLink = false
+                let playerShot = false
 
-                boomBallsArray.forEach(function (boomObj) {
-                    if (!boomObj.faded) {
-                        let boomX = boomObj.ballX
-                        let boomY = boomObj.ballY
-                        let boomRad = boomObj.ballRad + boomObj.chainRad
-
-                        if (collideCheck(aX, aY, aRad, boomX, boomY, boomRad)) {
-                            boomedFlag = true
-                        }
-                    }
-                })
-
-                if (boomedFlag) {
-                    ballObj.boomed = true
-                    boomBallsArray.push(ballObj)
+                if (boomObj.ballName === "playerShot") {
+                    playerShot = true
                 }
-            }
-        })
-    }
+
+                if (!boomObj.faded) {
+                    let boomX = boomObj.ballX
+                    let boomY = boomObj.ballY
+                    let boomRad = boomObj.ballRad
+
+                    chainArray.forEach(function (chainObj) {
+                        if (!chainObj.boomed) {
+                            let aX = chainObj.ballX
+                            let aY = chainObj.ballY
+                            let aRad = chainObj.chainRad
+                            if (playerShot) {
+                                aRad = chainObj.ballRad
+                            }
+
+
+                            if (collideCheck(aX, aY, aRad, boomX, boomY, boomRad)) {
+                                chainObj.boomed = true
+                                chainObj.ballRad = chainObj.chainRad - 5
+                                boomBallsArray.push(chainObj)
+                            }
+                        }
+
+                    })
+
+                    ballArray.forEach(function (ballObj) {
+                        if (!ballObj.boomed) {
+                            let aX = ballObj.ballX
+                            let aY = ballObj.ballY
+                            let aRad = ballObj.ballRad
+                            let orangeFlag = false
+                            if (ballObj.ballName === 'orange') {
+                                orangeFlag = true
+                            }
+
+                            if (playerShot && orangeFlag && (collideCheck(aX, aY, aRad, boomX, boomY, boomRad))) {
+                                ballObj.ballName = "red"
+                                ballObj.ballCol = '#ff479c'
+                            } else if (collideCheck(aX, aY, aRad, boomX, boomY, boomRad)) {
+                                ballObj.boomed = true
+                                boomBallsArray.push(ballObj)
+                            }
+                        }
+
+                    })
+                }
+
+                // if (boomedFlag) {
+                //     ballObj.boomed = true
+                //     boomBallsArray.push(ballObj)
+                // }
+
+            })
+        }
 
     // adjust boomball size and draw boomballs
 
@@ -316,88 +364,96 @@ function collideCheck(aX,aY,aRad,bX,bY,bRad){
     return ((xDist*xDist+yDist*yDist)<=(sumRad*sumRad))
 }
 
-function drawLine(ballArray) {
+function drawLine(ballArrayTemp) {
 
     let detonateArray1 = []
-    let detonateArray2 = []
+    chainArray = []
 
-    ballArray.forEach(function(obj){
+    ballArrayTemp.forEach(function(obj){
         if (obj.ballName === 'red') {
-            let detonateObj = {}
-            detonateObj.ballX = obj.ballX
-            detonateObj.ballY = obj.ballY
-            detonateObj.ballRad = obj.ballRad
-            detonateObj.chainRad = obj.chainRad
-            detonateArray1.push(detonateObj)
+            detonateArray1.push(obj)
+            // let detonateObj = {}
+            // detonateObj.ballX = obj.ballX
+            // detonateObj.ballY = obj.ballY
+            // detonateObj.ballRad = obj.ballRad
+            // detonateObj.chainRad = obj.chainRad
+            // detonateArray1.push(detonateObj)
         }
     })
-
-    ballArray.forEach(function(obj){
-        if (obj.ballName === 'orange') {
-            let detonateObj2 = {}
-            detonateObj2.ballX = obj.ballX
-            detonateObj2.ballY = obj.ballY
-            detonateObj2.ballRad = obj.ballRad
-            detonateObj2.chainRad = obj.chainRad
-            detonateArray2.push(detonateObj2)
-        }
-    })
-
-
-
-    //
-    // let redArray = ballArray.filter(obj => obj.ballName === 'red')
-    // let orangeArray = ballArray.filter(obj => obj.ballName === 'orange')
-    //
-    // detonateArray1 = [...redArray,...orangeArray]
-    // detonateArray2 = [...redArray,...orangeArray]
-
-    // console.log(detonateArray1)
-    //
 
     detonateArray1.forEach(function(obj1){
-        detonateArray2.forEach(function(obj2){
-            let aX = obj1.ballX
-            let aY = obj1.ballY
-            let aRad = obj1.ballRad+obj1.chainRad
+        let aX = obj1.ballX
+        let aY = obj1.ballY
+        let aRad = obj1.chainRad
+        let chainFlag = false
 
+
+        detonateArray1.forEach(function(obj2){
             let bX = obj2.ballX
             let bY = obj2.ballY
-            let bRad = obj2.ballRad+obj2.chainRad
+            let bRad = obj2.chainRad
 
-            if (collideCheck(aX, aY, aRad, bX, bY, bRad)){
-                ctx.beginPath();
-                ctx.moveTo(aX,aY);
-                ctx.lineTo(bX,bY);
-                ctx.lineWidth = 2;
-                ctx.strokeStyle = '#ff479c';
-                ctx.stroke();
-                ctx.closePath();
+            if (!((aX===bX)&&(aY===bY))) {
+                if (collideCheck(aX, aY, aRad, bX, bY, bRad)) {
+                    chainFlag = true
+                    ctx.beginPath();
+                    ctx.moveTo(aX, aY);
+                    ctx.lineTo(bX, bY);
+                    ctx.lineWidth = 2;
+                    ctx.strokeStyle = '#ff479c';
+                    ctx.stroke();
+                    ctx.closePath();
+                }
             }
         })
+        if (chainFlag) {
+            obj1.chainMult = true
+            chainArray.push(obj1)
+                    }
+
+    })
+    //console.log(chainArray.length)
+
+}
+
+function replenishBalls(gameCounter) {
+
+    let blueCount = 0
+    let redCount = 0
+    let orangeCount = 0
+    let maxBlue = levelBallCount[0].maxBlue
+    let maxRed = levelBallCount[0].maxRed
+    let maxOrange = levelBallCount[0].maxOrange
+
+    ballArray.forEach(function(obj){
+        if (obj.ballName==='blue') {blueCount++}
+        if (obj.ballName==='red') {redCount++}
+        if (obj.ballName==='orange') {orangeCount++}
     })
 
-    // detonateArray2.forEach(function(obj1){
-    //     detonateArray1.forEach(function(obj2){
-    //         let aX = obj1.ballX
-    //         let aY = obj1.ballY
-    //         let aRad = obj1.ballRad+obj1.chainRad
-    //
-    //         let bX = obj2.ballX
-    //         let bY = obj2.ballY
-    //         let bRad = obj2.ballRad+obj2.chainRad
-    //
-    //         if (collideCheck(aX, aY, aRad, bX, bY, bRad)){
-    //             ctx.beginPath();
-    //             ctx.moveTo(aX,aY);
-    //             ctx.lineTo(bX,bY);
-    //             ctx.lineWidth = 2;
-    //             ctx.strokeStyle = '#fffb38';
-    //             ctx.stroke();
-    //             ctx.closePath();
-    //         }
-    //     })
-    // })
+    console.log(redCount+' '+maxRed)
+
+
+    if (gameCounter%300===0) {
+        if (redCount < maxRed) {
+            let newBall = ballGenerator(ballValues[1])
+            ballArray.push(newBall)
+        }
+    }
+
+    if (gameCounter%50===0) {
+        if (orangeCount < maxOrange) {
+            let newBall = ballGenerator(ballValues[2])
+            ballArray.push(newBall)
+        }
+    }
+
+    if (gameCounter%20===0) {
+        if (blueCount < maxBlue) {
+            let newBall = ballGenerator(ballValues[0])
+            ballArray.push(newBall)
+        }
+    }
 }
 
 
@@ -420,8 +476,9 @@ function mouseClickHandler() {
     mouseClick = true;
     let playerShotObj = new BallConstructor(ballValues[4],pCursor.pX,pCursor.pY,0,0)
     boomBallsArray.push(playerShotObj)
+    console.log(playerShotObj)
 }
 
 
-setInterval(draw, 16.67);
+setInterval(draw, 10);
 
