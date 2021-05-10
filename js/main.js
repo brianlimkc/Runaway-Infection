@@ -52,18 +52,19 @@ let ballValues = [
         boomed: false,
         faded: false
     },
-    node = {
-        ballName: "node",
-        ballCol: 'orangered',
-        ballRad: 10,
-        counter: 400,
-        boomUpEnd: 30,
-        boomDownStart: 100,
-        boomUpSize: 0.5,
-        boomDownSize: 0.5,
+    monster = {
+        ballName: "monster",
+        ballCol: 'purple',
+        ballRad: 20,
+        counter: 1,
+        ballSpeed: 0.5,
+        boomUpEnd: 1,
+        boomDownStart: 1,
+        boomUpSize: 0,
+        boomDownSize: 0,
         chainMult: false,
         pointsValue: 1000,
-        chainRad: 100,
+        chainRad: 0,
         boomed: false,
         faded: false
     },
@@ -91,11 +92,13 @@ let levelBallCount = [
         orange: 0,
         maxBlue: 50,
         maxRed: 20,
-        maxOrange: 3
+        maxOrange: 3,
+        maxMonster: 2,
     }
 ]
 
 let ballArray = fillBallArray(levelBallCount[0])
+
 // console.log(ballArray)
 
 function fillBallArray(ballCountObj){
@@ -187,7 +190,35 @@ function draw() {
 
     drawLine(ballArray)
 
-    ballArray.forEach(function (ballObj) { // draw balls and move balls
+    // draw balls and move balls
+
+    ballDrawMove(ballArray)
+
+    // draws cursor
+
+    drawCursor(pCursor)
+
+    // collision check
+
+    collisionHander(ballArray)
+
+    // monster makan
+
+    monsterMakan(ballArray)
+
+    // adjust boomball size and draw boomballs
+
+    boomArrayHandler(boomBallsArray)
+
+    // housekeeping for ballarray and boomballsarray
+
+    arrayHousekeeping()
+
+} // end of draw function
+
+function ballDrawMove(ballArray) {
+
+    ballArray.forEach(function (ballObj) {
         if (!ballObj.boomed) {
 
             let ballX = ballObj.ballX
@@ -211,127 +242,7 @@ function draw() {
             ballObj.ballY += ballObj.ballDY;
         }
     })
-
-    drawCursor(pCursor) // draws cursor
-
-    // collision check
-
-        if (mouseClick) {
-            boomBallsArray.forEach(function(boomObj){
-                let boomedFlag = false
-                let playerShot = false
-
-                if (boomObj.ballName === "playerShot") {
-                    playerShot = true
-                }
-
-                if (!boomObj.faded) {
-                    let boomX = boomObj.ballX
-                    let boomY = boomObj.ballY
-                    let boomRad = boomObj.ballRad
-
-                    chainArray.forEach(function (chainObj) {
-                        if (!chainObj.boomed) {
-                            let aX = chainObj.ballX
-                            let aY = chainObj.ballY
-                            let aRad = chainObj.chainRad
-                            if (playerShot) {
-                                aRad = chainObj.ballRad
-                            }
-
-
-                            if (collideCheck(aX, aY, aRad, boomX, boomY, boomRad)) {
-                                chainObj.boomed = true
-                                chainObj.ballRad = chainObj.chainRad - 5
-                                boomBallsArray.push(chainObj)
-                            }
-                        }
-
-                    })
-
-                    ballArray.forEach(function (ballObj) {
-                        if (!ballObj.boomed) {
-                            let aX = ballObj.ballX
-                            let aY = ballObj.ballY
-                            let aRad = ballObj.ballRad
-                            let orangeFlag = false
-                            if (ballObj.ballName === 'orange') {
-                                orangeFlag = true
-                            }
-
-                            if (playerShot && orangeFlag && (collideCheck(aX, aY, aRad, boomX, boomY, boomRad))) {
-                                ballObj.ballName = "red"
-                                ballObj.ballCol = '#ff479c'
-                            } else if (collideCheck(aX, aY, aRad, boomX, boomY, boomRad)) {
-                                ballObj.boomed = true
-                                boomBallsArray.push(ballObj)
-                            }
-                        }
-
-                    })
-                }
-
-                // if (boomedFlag) {
-                //     ballObj.boomed = true
-                //     boomBallsArray.push(ballObj)
-                // }
-
-            })
-        }
-
-    // adjust boomball size and draw boomballs
-
-    if (mouseClick) {
-        boomBallsArray.forEach(function (boomObj) {
-            if (!boomObj.faded) {
-
-                boomObj.counter -= 1
-                let boomCount = boomObj.counter
-
-                if (boomCount <= 0) {
-                    boomObj.ballRad = 0
-                    boomObj.faded = true
-                } else if (boomCount <= boomObj.boomDownStart) {
-                    boomObj.ballRad -= boomObj.boomDownSize
-                } else if (boomCount >= boomObj.boomUpEnd) {
-                    boomObj.ballRad += boomObj.boomUpSize
-                }
-
-                let ballX = boomObj.ballX
-                let ballY = boomObj.ballY
-                let ballCol = boomObj.ballCol
-                let ballRad = boomObj.ballRad
-
-                drawBall(ballX, ballY, ballCol, ballRad);
-            }
-        })
-    }
-
-
-    if (boomBallsArray.length >= 1) {
-        let boomLength = boomBallsArray.length - 1
-        for (let i = boomLength; i >= 0; i--) {
-            if (boomBallsArray[i].faded) {
-                boomBallsArray.splice(i, 1)
-                //console.log('removed faded')
-            }
-        }
-    }
-
-    if (ballArray.length >= 1) {
-        let ballLength = ballArray.length - 1
-        for (let i = ballLength; i >= 0; i--) {
-            if (ballArray[i].boomed) {
-                ballArray.splice(i, 1)
-                //console.log('removed boomed')
-            }
-        }
-    }
-
-    // console.log(`BallArray length: ${ballArray.length} BoomArrayLength: ${boomBallsArray.length}`)
-} // end of draw function
-
-
+}
 
 function drawBall(ballX, ballY, ballCol, ballRad) {
     ctx.beginPath();
@@ -372,12 +283,6 @@ function drawLine(ballArrayTemp) {
     ballArrayTemp.forEach(function(obj){
         if (obj.ballName === 'red') {
             detonateArray1.push(obj)
-            // let detonateObj = {}
-            // detonateObj.ballX = obj.ballX
-            // detonateObj.ballY = obj.ballY
-            // detonateObj.ballRad = obj.ballRad
-            // detonateObj.chainRad = obj.chainRad
-            // detonateArray1.push(detonateObj)
         }
     })
 
@@ -416,23 +321,103 @@ function drawLine(ballArrayTemp) {
 
 }
 
+function collisionHander(ballArray) {
+
+    if (mouseClick) {
+        boomBallsArray.forEach(function (boomObj) {
+            let boomedFlag = false
+            let playerShot = false
+
+            if (boomObj.ballName === "playerShot") {
+                playerShot = true
+            }
+
+            if (!boomObj.faded) {
+                let boomX = boomObj.ballX
+                let boomY = boomObj.ballY
+                let boomRad = boomObj.ballRad
+
+                chainArray.forEach(function (chainObj) {
+                    if (!chainObj.boomed) {
+                        let aX = chainObj.ballX
+                        let aY = chainObj.ballY
+                        let aRad = chainObj.chainRad
+                        if (playerShot) {
+                            aRad = chainObj.ballRad
+                        }
+
+
+                        if (collideCheck(aX, aY, aRad, boomX, boomY, boomRad)) {
+                            chainObj.boomed = true
+                            chainObj.ballRad = chainObj.chainRad - 5
+                            boomBallsArray.push(chainObj)
+                        }
+                    }
+
+                })
+
+                ballArray.forEach(function (ballObj) {
+                    if (!ballObj.boomed) {
+                        let aX = ballObj.ballX
+                        let aY = ballObj.ballY
+                        let aRad = ballObj.ballRad
+                        let orangeFlag = false
+                        let monsterFlag = false
+                        if (ballObj.ballName === 'orange') {
+                            orangeFlag = true
+                        }
+                        if (ballObj.ballName === 'monster') {
+                            monsterFlag = true
+                        }
+
+                        if (playerShot && orangeFlag && (collideCheck(aX, aY, aRad, boomX, boomY, boomRad))) {
+                            ballObj.ballName = "red"
+                            ballObj.ballCol = '#ff479c'
+                        } else if (playerShot && monsterFlag && (collideCheck(aX, aY, aRad, boomX, boomY, boomRad))) {
+                            if (ballObj.ballRad <= 10) {
+                                ballObj.boomed = true
+                                boomBallsArray.push(ballObj)
+                            } else {
+                                ballObj.ballRad -= 10
+                            }
+                        } else if (collideCheck(aX, aY, aRad, boomX, boomY, boomRad)) {
+                            ballObj.boomed = true
+                            boomBallsArray.push(ballObj)
+                        }
+                    }
+
+                })
+            }
+
+            // if (boomedFlag) {
+            //     ballObj.boomed = true
+            //     boomBallsArray.push(ballObj)
+            // }
+
+        })
+    }
+}
+
 function replenishBalls(gameCounter) {
 
     let blueCount = 0
     let redCount = 0
     let orangeCount = 0
+    let monsterCount = 0
     let maxBlue = levelBallCount[0].maxBlue
     let maxRed = levelBallCount[0].maxRed
     let maxOrange = levelBallCount[0].maxOrange
+    let maxMonster = levelBallCount[0].maxMonster
 
     ballArray.forEach(function(obj){
         if (obj.ballName==='blue') {blueCount++}
         if (obj.ballName==='red') {redCount++}
         if (obj.ballName==='orange') {orangeCount++}
+        if (obj.ballName==='monster') {
+            monsterCount++
+            obj.ballRad += 0.05
+        }
     })
-
-    console.log(redCount+' '+maxRed)
-
 
     if (gameCounter%300===0) {
         if (redCount < maxRed) {
@@ -454,8 +439,91 @@ function replenishBalls(gameCounter) {
             ballArray.push(newBall)
         }
     }
+
+    if (gameCounter%600===0) {
+        if (monsterCount < maxMonster) {
+            let newBall = ballGenerator(ballValues[3])
+            ballArray.push(newBall)
+        }
+    }
 }
 
+function monsterMakan(ballArray) {
+       let monsterArray = []
+    let tempBallArray = []
+
+    ballArray.forEach(function(obj){
+        if (obj.ballName === 'monster') {
+            monsterArray.push(obj)
+        } else {
+            tempBallArray.push(obj)
+        }
+    })
+
+    monsterArray.forEach(function(monstObj){
+        let aX = monstObj.ballX
+        let aY = monstObj.ballY
+        let aRad = monstObj.ballRad
+        tempBallArray.forEach(function(ballObj){
+            let bX = ballObj.ballX
+            let bY = ballObj.ballY
+            let bRad = ballObj.ballRad
+            if (collideCheck(aX, aY, aRad, bX, bY, bRad)) {
+                ballObj.boomed = true
+            }
+        })
+    })
+}
+
+function boomArrayHandler(boomBallsArray) {
+    if (mouseClick) {
+        boomBallsArray.forEach(function (boomObj) {
+            if (!boomObj.faded) {
+
+                boomObj.counter -= 1
+                let boomCount = boomObj.counter
+
+                if (boomCount <= 0) {
+                    boomObj.ballRad = 0
+                    boomObj.faded = true
+                } else if (boomCount <= boomObj.boomDownStart) {
+                    boomObj.ballRad -= boomObj.boomDownSize
+                } else if (boomCount >= boomObj.boomUpEnd) {
+                    boomObj.ballRad += boomObj.boomUpSize
+                }
+
+                let ballX = boomObj.ballX
+                let ballY = boomObj.ballY
+                let ballCol = boomObj.ballCol
+                let ballRad = boomObj.ballRad
+
+                drawBall(ballX, ballY, ballCol, ballRad);
+            }
+        })
+    }
+}
+
+function arrayHousekeeping() {
+    if (boomBallsArray.length >= 1) {
+        let boomLength = boomBallsArray.length - 1
+        for (let i = boomLength; i >= 0; i--) {
+            if (boomBallsArray[i].faded) {
+                boomBallsArray.splice(i, 1)
+                //console.log('removed faded')
+            }
+        }
+    }
+
+    if (ballArray.length >= 1) {
+        let ballLength = ballArray.length - 1
+        for (let i = ballLength; i >= 0; i--) {
+            if (ballArray[i].boomed) {
+                ballArray.splice(i, 1)
+                //console.log('removed boomed')
+            }
+        }
+    }
+}
 
 // Event listeners
 document.addEventListener("mousemove", mouseMoveHandler, false);
@@ -476,7 +544,6 @@ function mouseClickHandler() {
     mouseClick = true;
     let playerShotObj = new BallConstructor(ballValues[4],pCursor.pX,pCursor.pY,0,0)
     boomBallsArray.push(playerShotObj)
-    console.log(playerShotObj)
 }
 
 
