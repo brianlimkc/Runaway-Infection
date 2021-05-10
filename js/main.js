@@ -2,6 +2,18 @@ let canvas = document.getElementById("myCanvas");
 let ctx = canvas.getContext("2d");
 let mouseClick = false;
 let gameCounter = 0;
+let boomBallsArray = []
+let chainArray = []
+let pCursor = {
+    pX : canvas.width/2,
+    pY : canvas.height/2,
+    pCol : 'black',
+    pRad : 25,
+    pFill: false,
+    pNotClicked: true,
+    pCounter: 0,
+    pfaded: false
+}
 
 let ballValues = [
     blueBall = {
@@ -99,8 +111,6 @@ let levelBallCount = [
 
 let ballArray = fillBallArray(levelBallCount[0])
 
-// console.log(ballArray)
-
 function fillBallArray(ballCountObj){
     let ballArray = []
     let blueCount = ballCountObj.blue
@@ -157,64 +167,6 @@ function BallConstructor(ballValueObj, x, y, dx, dy) {
     this.boomed = false
     this.faded = false
 }
-
-let boomBallsArray = []
-let chainArray = []
-
-//player cursor definition
-
-let pCursor = {
-    pX : canvas.width/2,
-    pY : canvas.height/2,
-    pCol : 'black',
-    pRad : 25,
-    pFill: false,
-    pNotClicked: true,
-    pCounter: 0,
-    pfaded: false
-}
-
-
-// main function
-function draw() {
-
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    if (gameCounter > 1200) {
-        gameCounter === 1
-    }
-
-    gameCounter++
-
-    replenishBalls(gameCounter)
-
-    drawLine(ballArray)
-
-    // draw balls and move balls
-
-    ballDrawMove(ballArray)
-
-    // draws cursor
-
-    drawCursor(pCursor)
-
-    // collision check
-
-    collisionHander(ballArray)
-
-    // monster makan
-
-    monsterMakan(ballArray)
-
-    // adjust boomball size and draw boomballs
-
-    boomArrayHandler(boomBallsArray)
-
-    // housekeeping for ballarray and boomballsarray
-
-    arrayHousekeeping()
-
-} // end of draw function
 
 function ballDrawMove(ballArray) {
 
@@ -547,5 +499,46 @@ function mouseClickHandler() {
 }
 
 
-setInterval(draw, 10);
+// main function
+function draw() {
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    if (gameCounter > 1200) {
+        gameCounter === 1
+    }
+
+    gameCounter++
+
+    replenishBalls(gameCounter)
+
+    drawLine(ballArray)
+
+    // draw balls and move balls
+
+    ballDrawMove(ballArray)
+
+    // draws cursor
+
+    drawCursor(pCursor)
+
+    // collision check
+
+    collisionHander(ballArray)
+
+    // monster makan
+
+    monsterMakan(ballArray)
+
+    // adjust boomball size and draw boomballs
+
+    boomArrayHandler(boomBallsArray)
+
+    // housekeeping for ballarray and boomballsarray
+
+    arrayHousekeeping()
+
+} // end of draw function
+
+setInterval(draw, 16.67);
 
