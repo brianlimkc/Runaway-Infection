@@ -1,0 +1,155 @@
+.grid-container-main {
+  display: grid;
+  width: 1440px;
+  grid-template-columns: 1fr;
+  grid-template-rows: 150px 720px 100px;
+  gap: 5px 5px;
+  grid-template-areas:
+    "Header"
+    "Main-Panel"
+    "Footer";
+
+  .Header {
+    grid-area: Header;
+    background-color: lightgray;
+    height: auto;
+    width: 100%
+
+  }
+  .Main-Panel {
+    display: grid;
+    grid-template-columns: 360px 720px 360px;
+    grid-template-rows: 1fr;
+    gap: 5px 5px;
+    grid-template-areas:
+    "OptionsLeft Graphic OptionsRight";
+    grid-area: Main-Panel;
+    background-color: white;
+    height: auto;
+  }
+  .OptionsLeft {
+    grid-area: OptionsLeft;
+    background-color: lightgray;
+  }
+  .Graphic {
+    grid-area: Graphic;
+    .img {
+      height: auto;
+      width: auto;
+    }
+
+  }
+  .OptionsRight {
+    grid-area: OptionsRight;
+    background-color: lightgray;
+  }
+  .Footer {
+    grid-area: Footer;
+    background-color: lightgray;
+    height: auto;
+  }
+
+}
+
+.main-wrapper {
+  display: flex;
+  justify-content: center;
+}
+
+.main-game-wrapper {
+  display: none;
+  justify-content: center;
+  }
+
+.grid-container-game {
+  display: grid;
+  width: 1440px;
+  grid-template-columns: 1fr;
+  grid-template-rows: 150px 720px 100px;
+  gap: 5px 5px;
+  grid-template-areas:
+    "Header"
+    "Main-Panel"
+    "Footer";
+  .Header {
+    grid-area: Header;
+    background-color: lightgray;
+    height: auto;
+    width: 100%
+  }
+  .Main-Panel {
+    display: grid;
+    grid-template-columns: 360px 720px 360px;
+    grid-template-rows: 1fr;
+    gap: 5px 5px;
+    grid-template-areas:
+    "ScoringLeft Game-Area ScoringRight";
+    grid-area: Main-Panel;
+    background-color: white;
+    height: auto;
+
+    .ScoringLeft {
+      grid-area: ScoringLeft;
+      background-color: lightgray;
+    }
+
+    .Game-Area {
+      grid-area: Game-Area;
+      background-color: white;
+
+      .canvas {
+        margin: auto;
+        background: white;
+        display: block;
+      }
+    }
+    .ScoringRight {
+      grid-area: ScoringRight;
+      background-color: lightgray;
+    }
+  }
+  .Footer {
+    grid-area: Footer;
+    background-color: lightgray;
+    height: auto;
+  }
+}
+
+/* The Modal (background) */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content/Box */
+.modal-content {
+  background-color: #fefefe;
+  margin: 15% auto; /* 15% from the top and centered */
+  padding: 20px;
+  border: 1px solid #888;
+  width: 40%; /* Could be more or less, depending on screen size */
+}
+
+/* The Close Button */
+.close {
+  color: #aaa;
+  display: block;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+

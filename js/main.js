@@ -1,9 +1,6 @@
 let canvas = document.getElementById("myCanvas");
 let ctx = canvas.getContext("2d");
-let mouseClick = false;
-let gameCounter = 0;
-let boomBallsArray = []
-let chainArray = []
+let gameTime = 0
 let pCursor = {
     pX : canvas.width/2,
     pY : canvas.height/2,
@@ -14,6 +11,10 @@ let pCursor = {
     pCounter: 0,
     pfaded: false
 }
+let mouseClick = false;
+let gameCounter = 0;
+let boomBallsArray = []
+let chainArray = []
 
 let ballValues = [
     blueBall = {
@@ -97,19 +98,91 @@ let ballValues = [
     }
 ]
 
-let levelBallCount = [
+let levelCount = 0
+
+let levelInitValues = [
     level1 = {
-        blue: 10,
-        red: 0,
+        blue: 15,
+        red: 5,
         orange: 0,
-        maxBlue: 50,
+        maxBlue: 30,
+        maxRed: 15,
+        maxOrange: 0,
+        maxMonster: 0,
+        levelTime: 1200,
+        blueSpawn: 20,
+        redSpawn: 30,
+        orangeSpawn: 1201,
+        monsterSpawn: 1201,
+        monsterGrow: 0,
+        levelDesc: "Click on the blue and red balls to shoot them. Red balls will be linked by a line when they are close. Shoot red balls when they are linked for a bigger explosion!"
+    },
+    level2 = {
+        blue: 20,
+        red: 5,
+        orange: 5,
+        maxBlue: 40,
         maxRed: 20,
-        maxOrange: 3,
-        maxMonster: 2,
+        maxOrange: 10,
+        maxMonster: 0,
+        levelTime: 1200,
+        blueSpawn: 20,
+        redSpawn: 100,
+        orangeSpawn: 20,
+        monsterSpawn: 1201,
+        monsterGrow: 0,
+        levelDesc: "Click on orange balls to change them into red balls, so you can form even bigger chains!"
+    },
+    level3 = {
+        blue: 20,
+        red: 3,
+        orange: 3,
+        maxBlue: 40,
+        maxRed: 10,
+        maxOrange: 2,
+        maxMonster: 1,
+        levelTime: 1200,
+        blueSpawn: 20,
+        redSpawn: 100,
+        orangeSpawn: 20,
+        monsterSpawn: 400,
+        monsterGrow: 0.05,
+        levelDesc: "Purple Monsters have appeared! They will eat your balls and grow larger over time, so click on them to kill them!"
+    },
+    level4 = {
+        blue: 30,
+        red: 5,
+        orange: 5,
+        maxBlue: 60,
+        maxRed: 20,
+        maxOrange: 5,
+        maxMonster: 3,
+        levelTime: 1200,
+        blueSpawn: 20,
+        redSpawn: 100,
+        orangeSpawn: 20,
+        monsterSpawn: 300,
+        monsterGrow: 0.15,
+        levelDesc: "This hard level has more of everything. Think you can survive?"
+    },
+    level5 = {
+        blue: 30,
+        red: 5,
+        orange: 5,
+        maxBlue: 60,
+        maxRed: 20,
+        maxOrange: 5,
+        maxMonster: 5,
+        levelTime: 1200,
+        blueSpawn: 20,
+        redSpawn: 100,
+        orangeSpawn: 20,
+        monsterSpawn: 200,
+        monsterGrow: 0.30,
+        levelDesc: "This is the nightmare difficulty level, challenge it if you dare!"
     }
 ]
 
-let ballArray = fillBallArray(levelBallCount[0])
 
 function fillBallArray(ballCountObj){
     let ballArray = []
@@ -273,11 +346,10 @@ function drawLine(ballArrayTemp) {
 
 }
 
-function collisionHander(ballArray) {
+function collisionHandler(ballArray) {
 
     if (mouseClick) {
         boomBallsArray.forEach(function (boomObj) {
-            let boomedFlag = false
             let playerShot = false
 
             if (boomObj.ballName === "playerShot") {
@@ -340,12 +412,6 @@ function collisionHander(ballArray) {
 
                 })
             }
-
-            // if (boomedFlag) {
-            //     ballObj.boomed = true
-            //     boomBallsArray.push(ballObj)
-            // }
-
         })
     }
 }
@@ -356,10 +422,16 @@ function replenishBalls(gameCounter) {
     let redCount = 0
     let orangeCount = 0
     let monsterCount = 0
-    let maxBlue = levelBallCount[0].maxBlue
-    let maxRed = levelBallCount[0].maxRed
-    let maxOrange = levelBallCount[0].maxOrange
-    let maxMonster = levelBallCount[0].maxMonster
+    let maxBlue = levelInitValues[levelCount].maxBlue
+    let maxRed = levelInitValues[levelCount].maxRed
+    let maxOrange = levelInitValues[levelCount].maxOrange
+    let maxMonster = levelInitValues[levelCount].maxMonster
+    let blueSpawn = levelInitValues[levelCount].blueSpawn
+    let redSpawn = levelInitValues[levelCount].redSpawn
+    let orangeSpawn = levelInitValues[levelCount].orangeSpawn
+    let monsterSpawn = levelInitValues[levelCount].monsterSpawn
+
+
 
     ballArray.forEach(function(obj){
         if (obj.ballName==='blue') {blueCount++}
@@ -367,32 +439,32 @@ function replenishBalls(gameCounter) {
         if (obj.ballName==='orange') {orangeCount++}
         if (obj.ballName==='monster') {
             monsterCount++
-            obj.ballRad += 0.05
+            obj.ballRad += levelInitValues[levelCount].monsterGrow
         }
     })
 
-    if (gameCounter%300===0) {
+    if (gameCounter%redSpawn===0) {
         if (redCount < maxRed) {
             let newBall = ballGenerator(ballValues[1])
             ballArray.push(newBall)
         }
     }
 
-    if (gameCounter%50===0) {
+    if (gameCounter%orangeSpawn===0) {
         if (orangeCount < maxOrange) {
             let newBall = ballGenerator(ballValues[2])
             ballArray.push(newBall)
         }
     }
 
-    if (gameCounter%20===0) {
+    if (gameCounter%blueSpawn===0) {
         if (blueCount < maxBlue) {
             let newBall = ballGenerator(ballValues[0])
             ballArray.push(newBall)
         }
     }
 
-    if (gameCounter%600===0) {
+    if (gameCounter%monsterSpawn===0) {
         if (monsterCount < maxMonster) {
             let newBall = ballGenerator(ballValues[3])
             ballArray.push(newBall)
@@ -401,7 +473,7 @@ function replenishBalls(gameCounter) {
 }
 
 function monsterMakan(ballArray) {
-       let monsterArray = []
+    let monsterArray = []
     let tempBallArray = []
 
     ballArray.forEach(function(obj){
@@ -504,8 +576,9 @@ function draw() {
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+
     if (gameCounter > 1200) {
-        gameCounter === 1
+        gameCounter = 1
     }
 
     gameCounter++
@@ -524,7 +597,7 @@ function draw() {
 
     // collision check
 
-    collisionHander(ballArray)
+    collisionHandler(ballArray)
 
     // monster makan
 
@@ -538,7 +611,88 @@ function draw() {
 
     arrayHousekeeping()
 
+    gameTime--
+
+    console.log(gameTime)
+
+    if (gameTime<=0) {
+        clearInterval(gameRun)
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        if (levelCount===4) {
+            endGame.style.display = "block"
+            levelCount=0
+        } else {
+            levelCount++
+            levelDesc.innerHTML = levelInitValues[levelCount].levelDesc
+            postGame.style.display = "block"
+        }
+
+    }
+
 } // end of draw function
 
-setInterval(draw, 16.67);
+let gameRun
+
+function mainGame(){
+
+    mouseClick = false;
+    gameCounter = 0;
+    boomBallsArray = []
+    chainArray = []
+    ballArray = fillBallArray(levelInitValues[levelCount])
+
+    gameTime = levelInitValues[levelCount].levelTime
+
+    gameRun = setInterval(draw, 10);
+}
+
+let mainScreen = document.getElementById("main");
+let gameScreen = document.getElementById("game");
+let levelDesc = document.getElementById("levelDesc")
+
+
+// Get the modal
+let preGame = document.getElementById("preGame");
+let postGame = document.getElementById("postGame");
+let endGame = document.getElementById("endGame");
+
+
+// Get the button that opens the modal
+let btn = document.getElementById("myBtn");
+
+
+// Get the <span> element that closes the modal
+let closeBtn = document.getElementById("closeBtn");
+let nextBtn = document.getElementById("nextBtn");
+let endBtn = document.getElementById("endBtn");
+
+// When the user clicks on the button, open the modal
+btn.onclick = function() {
+    mainScreen.style.display = "none";
+    gameScreen.style.display = "flex";
+    preGame.style.display = "block";
+    levelDesc.innerHTML = levelInitValues[levelCount].levelDesc
+}
+
+// When the user clicks on <span> (x), close the modal
+closeBtn.onclick = function() {
+    preGame.style.display = "none"
+    mainGame()
+}
+
+
+nextBtn.onclick = function() {
+    preGame.style.display = "block";
+    postGame.style.display = "none"
+}
+
+endBtn.onclick = function() {
+    mainScreen.style.display = "flex";
+    gameScreen.style.display = "none";
+    endGame.style.display = "none";
+}
+
+
+
 
