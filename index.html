@@ -7,14 +7,70 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Runaway Reaction</title>
     <link rel="stylesheet" href="css/main.css"/>
-    <style>
-      * { padding: 0; margin: 20px; }
-      canvas { background: #eee; display: block; margin: 0 auto; }
-    </style>
 </head>
 <body>
 
-<canvas id="myCanvas" width="720" height="720"></canvas>
+<div class="main-wrapper" id="main">
+    <div class="grid-container-main" >
+        <div class="Header"><h1>RUNAWAY REACTION - MAIN SCREEN</h1></div>
+        <div class="Main-Panel">
+            <div class="OptionsLeft">
+                <p>Play Runaway Reactions by clicking the button below</p>
+                <br>
+                <!-- Trigger/Open The Modal -->
+                <button id="myBtn">Start Game</button>
+            </div>
+            <div class="Graphic"><img alt="main image" src="resources/main%20placeholder%20image.png"/></div>
+            <div class="OptionsRight"></div>
+        </div>
+        <div class="Footer">Footer</div>
+    </div>
+</div>
+
+
+<div class="main-game-wrapper" id="game">
+    <div class="grid-container-game">
+        <div class="Header"><h1>RUNAWAY REACTION - GAME SCREEN</h1></div>
+        <div class="Main-Panel">
+            <div class="ScoringLeft">Score Placeholder</div>
+            <div class="Game-Area"><canvas id="myCanvas" width="720" height="720"></canvas></div>
+            <div class="ScoringRight">Score Placeholder</div>
+        </div>
+        <div class="Footer">Footer</div>
+
+
+        <!-- The Modal -->
+        <div id="preGame" class="modal">
+
+            <!-- Modal content -->
+            <div class="modal-content">
+                <p id="levelDesc">Here are some tips to play the game</p>
+                <p>Click the button below to begin!</p> <br>
+                <span class="close" id="closeBtn">Begin</span>
+            </div>
+        </div>
+    </div>
+
+    <div id="postGame" class="modal">
+
+        <!-- Modal content -->
+        <div class="modal-content">
+            <p id="levelReport">You have scored XXX points. Well done!</p>
+            <p>Click the button below to go to the next level!</p> <br>
+            <span class="close" id="nextBtn">Next Stage</span>
+        </div>
+    </div>
+
+    <div id="endGame" class="modal">
+
+        <!-- Modal content -->
+        <div class="modal-content">
+            <p>Congrats for surviving the final stage!</p>
+            <p>Click the button below to return to main screen</p> <br>
+            <span class="close" id="endBtn">Return to Main Screen</span>
+        </div>
+    </div>
+</div>
 
 <script src="js/main.js"></script>
 </body>
