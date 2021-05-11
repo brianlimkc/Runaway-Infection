@@ -340,11 +340,14 @@ function drawLine(ballArrayTemp) {
                     ctx.closePath();
                 }
             }
+            if (chainFlag) {
+                obj2.chainMult = true
+            }
         })
         if (chainFlag) {
             obj1.chainMult = true
             chainArray.push(obj1)
-                    }
+        }
 
     })
     //console.log(chainArray.length)
