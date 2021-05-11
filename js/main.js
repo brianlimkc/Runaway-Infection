@@ -13,6 +13,12 @@ let pCursor = {
 }
 let mouseClick = false;
 let gameCounter = 0;
+let gameScore = 0;
+let levelScore = 0;
+let blueCount = 0;
+let redCount = 0;
+let orangeCount = 0;
+
 let boomBallsArray = []
 let chainArray = []
 
@@ -22,11 +28,11 @@ let ballValues = [
         ballCol: '#35b5ff',
         ballRad: 10,
         ballSpeed: 3,
-        counter: 1,
-        boomUpEnd: 1,
-        boomDownStart: 1,
-        boomUpSize: 0,
-        boomDownSize: 0,
+        counter: 30,
+        boomUpEnd: 15,
+        boomDownStart: 15,
+        boomUpSize: 1,
+        boomDownSize: 1,
         chainMult: false,
         pointsValue: 100,
         chainRad: 0,
@@ -103,33 +109,33 @@ let levelCount = 0
 let levelInitValues = [
     level1 = {
         blue: 15,
-        red: 5,
+        red: 1,
         orange: 0,
         maxBlue: 30,
         maxRed: 15,
         maxOrange: 0,
         maxMonster: 0,
-        levelTime: 1200,
+        levelTime: 2000,
         blueSpawn: 20,
-        redSpawn: 30,
-        orangeSpawn: 1201,
-        monsterSpawn: 1201,
+        redSpawn: 50,
+        orangeSpawn: 2001,
+        monsterSpawn: 2001,
         monsterGrow: 0,
         levelDesc: "Click on the blue and red balls to shoot them. Red balls will be linked by a line when they are close. Shoot red balls when they are linked for a bigger explosion!"
     },
     level2 = {
         blue: 20,
-        red: 5,
-        orange: 5,
+        red: 1,
+        orange: 1,
         maxBlue: 40,
         maxRed: 20,
         maxOrange: 10,
         maxMonster: 0,
-        levelTime: 1200,
+        levelTime: 2000,
         blueSpawn: 20,
         redSpawn: 100,
-        orangeSpawn: 20,
-        monsterSpawn: 1201,
+        orangeSpawn: 30,
+        monsterSpawn: 2001,
         monsterGrow: 0,
         levelDesc: "Click on orange balls to change them into red balls, so you can form even bigger chains!"
     },
@@ -139,50 +145,49 @@ let levelInitValues = [
         orange: 3,
         maxBlue: 40,
         maxRed: 10,
-        maxOrange: 2,
+        maxOrange: 3,
         maxMonster: 1,
-        levelTime: 1200,
+        levelTime: 2000,
         blueSpawn: 20,
         redSpawn: 100,
-        orangeSpawn: 20,
+        orangeSpawn: 30,
         monsterSpawn: 400,
         monsterGrow: 0.05,
         levelDesc: "Purple Monsters have appeared! They will eat your balls and grow larger over time, so click on them to kill them!"
     },
     level4 = {
-        blue: 30,
-        red: 5,
-        orange: 5,
-        maxBlue: 60,
+        blue: 20,
+        red: 3,
+        orange: 3,
+        maxBlue: 40,
         maxRed: 20,
-        maxOrange: 5,
+        maxOrange: 3,
         maxMonster: 3,
-        levelTime: 1200,
+        levelTime: 2000,
         blueSpawn: 20,
         redSpawn: 100,
-        orangeSpawn: 20,
+        orangeSpawn: 30,
         monsterSpawn: 300,
         monsterGrow: 0.15,
         levelDesc: "This hard level has more of everything. Think you can survive?"
     },
     level5 = {
         blue: 30,
-        red: 5,
-        orange: 5,
+        red: 3,
+        orange: 3,
         maxBlue: 60,
         maxRed: 20,
-        maxOrange: 5,
+        maxOrange: 3,
         maxMonster: 5,
         levelTime: 1200,
         blueSpawn: 20,
-        redSpawn: 100,
-        orangeSpawn: 20,
+        redSpawn: 200,
+        orangeSpawn: 50,
         monsterSpawn: 200,
         monsterGrow: 0.30,
         levelDesc: "This is the nightmare difficulty level, challenge it if you dare!"
     }
 ]
-
 
 function fillBallArray(ballCountObj){
     let ballArray = []
@@ -370,10 +375,10 @@ function collisionHandler(ballArray) {
                             aRad = chainObj.ballRad
                         }
 
-
                         if (collideCheck(aX, aY, aRad, boomX, boomY, boomRad)) {
                             chainObj.boomed = true
                             chainObj.ballRad = chainObj.chainRad - 5
+                            levelScore+=chainObj.pointsValue*2
                             boomBallsArray.push(chainObj)
                         }
                     }
@@ -397,6 +402,7 @@ function collisionHandler(ballArray) {
                         if (playerShot && orangeFlag && (collideCheck(aX, aY, aRad, boomX, boomY, boomRad))) {
                             ballObj.ballName = "red"
                             ballObj.ballCol = '#ff479c'
+                            ballObj.pointsValue = 500
                         } else if (playerShot && monsterFlag && (collideCheck(aX, aY, aRad, boomX, boomY, boomRad))) {
                             if (ballObj.ballRad <= 10) {
                                 ballObj.boomed = true
@@ -406,7 +412,9 @@ function collisionHandler(ballArray) {
                             }
                         } else if (collideCheck(aX, aY, aRad, boomX, boomY, boomRad)) {
                             ballObj.boomed = true
+                            levelScore+=ballObj.pointsValue
                             boomBallsArray.push(ballObj)
+
                         }
                     }
 
@@ -430,8 +438,6 @@ function replenishBalls(gameCounter) {
     let redSpawn = levelInitValues[levelCount].redSpawn
     let orangeSpawn = levelInitValues[levelCount].orangeSpawn
     let monsterSpawn = levelInitValues[levelCount].monsterSpawn
-
-
 
     ballArray.forEach(function(obj){
         if (obj.ballName==='blue') {blueCount++}
@@ -576,13 +582,6 @@ function draw() {
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-
-    if (gameCounter > 1200) {
-        gameCounter = 1
-    }
-
-    gameCounter++
-
     replenishBalls(gameCounter)
 
     drawLine(ballArray)
@@ -611,31 +610,57 @@ function draw() {
 
     arrayHousekeeping()
 
-    gameTime--
+    timeKeeper()
 
-    console.log(gameTime)
-
-    if (gameTime<=0) {
-        clearInterval(gameRun)
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-        if (levelCount===4) {
-            endGame.style.display = "block"
-            levelCount=0
-        } else {
-            levelCount++
-            levelDesc.innerHTML = levelInitValues[levelCount].levelDesc
-            postGame.style.display = "block"
-        }
-
-    }
+    updateScore()
 
 } // end of draw function
 
 let gameRun
 
-function mainGame(){
+function timeKeeper() {
 
+    gameTime--
+
+    if (gameTime%100) {
+        $timeLeft.innerHTML = (gameTime/100).toFixed(1)
+    }
+
+    if (gameTime<=0) {
+        clearInterval(gameRun)
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        gameScore+=levelScore
+        $totalScore.innerHTML = gameScore
+
+        if (levelCount===4) {
+            $finalReport.innerHTML = `Your level score is ${levelScore} and your total score is ${gameScore}!!`
+            endGame.style.display = "block"
+            levelCount=0
+
+        } else {
+            levelCount++
+            $levelReport.innerHTML = `You have scored ${levelScore} points. Well Done!`
+            levelDesc.innerHTML = levelInitValues[levelCount].levelDesc
+            postGame.style.display = "block"
+
+        }
+    }
+
+    if (gameCounter > 1200) {
+        gameCounter = 1
+    }
+
+    gameCounter++
+}
+
+function updateScore(){
+
+    $levelScore.innerHTML = levelScore
+}
+
+function mainGame(){
+    $currentLevel.innerHTML = levelCount+1
+    levelScore = 0
     mouseClick = false;
     gameCounter = 0;
     boomBallsArray = []
@@ -650,6 +675,13 @@ function mainGame(){
 let mainScreen = document.getElementById("main");
 let gameScreen = document.getElementById("game");
 let levelDesc = document.getElementById("levelDesc")
+
+let $currentLevel = document.getElementById("currentLevel")
+let $totalScore = document.getElementById("totalScore")
+let $levelScore = document.getElementById("levelScore")
+let $levelReport = document.getElementById("levelReport")
+let $finalReport = document.getElementById("finalReport")
+let $timeLeft = document.getElementById("timeLeft")
 
 
 // Get the modal
@@ -691,6 +723,9 @@ endBtn.onclick = function() {
     mainScreen.style.display = "flex";
     gameScreen.style.display = "none";
     endGame.style.display = "none";
+    levelScore = 0
+    gameScore = 0
+    $totalScore.innerHTML = gameScore
 }
 
 

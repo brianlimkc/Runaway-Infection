@@ -32,17 +32,25 @@
     <div class="grid-container-game">
         <div class="Header"><h1>RUNAWAY REACTION - GAME SCREEN</h1></div>
         <div class="Main-Panel">
-            <div class="ScoringLeft">Score Placeholder</div>
+            <div class="ScoringLeft">
+                <h1>Current Level</h1>
+                <p id="currentLevel"></p>
+                <br>
+                <h1>Total Score</h1>
+                <p id="totalScore"></p>
+                <br>
+                <h1>Level Score</h1>
+                <p id="levelScore"></p>
+            </div>
             <div class="Game-Area"><canvas id="myCanvas" width="720" height="720"></canvas></div>
-            <div class="ScoringRight">Score Placeholder</div>
+            <div class="ScoringRight">
+                <h1>Time Remaining</h1>
+                <p><span id="timeLeft"></span> seconds </p>
+            </div>
         </div>
         <div class="Footer">Footer</div>
 
-
-        <!-- The Modal -->
         <div id="preGame" class="modal">
-
-            <!-- Modal content -->
             <div class="modal-content">
                 <p id="levelDesc">Here are some tips to play the game</p>
                 <p>Click the button below to begin!</p> <br>
@@ -52,8 +60,6 @@
     </div>
 
     <div id="postGame" class="modal">
-
-        <!-- Modal content -->
         <div class="modal-content">
             <p id="levelReport">You have scored XXX points. Well done!</p>
             <p>Click the button below to go to the next level!</p> <br>
@@ -62,12 +68,11 @@
     </div>
 
     <div id="endGame" class="modal">
-
-        <!-- Modal content -->
         <div class="modal-content">
             <p>Congrats for surviving the final stage!</p>
+            <p id="finalReport"></p>
             <p>Click the button below to return to main screen</p> <br>
-            <span class="close" id="endBtn">Return to Main Screen</span>
+            <span class="close" id="endBtn">Return</span>
         </div>
     </div>
 </div>

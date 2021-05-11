@@ -3,7 +3,7 @@
   width: 1440px;
   grid-template-columns: 1fr;
   grid-template-rows: 150px 720px 100px;
-  gap: 5px 5px;
+  gap: 0px 0px;
   grid-template-areas:
     "Header"
     "Main-Panel"
@@ -20,7 +20,7 @@
     display: grid;
     grid-template-columns: 360px 720px 360px;
     grid-template-rows: 1fr;
-    gap: 5px 5px;
+    gap: 0px 0px;
     grid-template-areas:
     "OptionsLeft Graphic OptionsRight";
     grid-area: Main-Panel;
@@ -66,22 +66,24 @@
   width: 1440px;
   grid-template-columns: 1fr;
   grid-template-rows: 150px 720px 100px;
-  gap: 5px 5px;
+  gap: 0px 0px;
   grid-template-areas:
     "Header"
     "Main-Panel"
     "Footer";
+
   .Header {
     grid-area: Header;
     background-color: lightgray;
     height: auto;
     width: 100%
   }
+
   .Main-Panel {
     display: grid;
     grid-template-columns: 360px 720px 360px;
     grid-template-rows: 1fr;
-    gap: 5px 5px;
+    gap: 0px 0px;
     grid-template-areas:
     "ScoringLeft Game-Area ScoringRight";
     grid-area: Main-Panel;
