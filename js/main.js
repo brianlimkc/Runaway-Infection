@@ -124,12 +124,12 @@ let levelInitValues = [
         levelDesc: "Click on the blue and red balls to shoot them. Red balls will be linked by a line when they are close. Shoot red balls when they are linked for a bigger explosion!"
     },
     level2 = {
-        blue: 20,
+        blue: 15,
         red: 1,
         orange: 1,
-        maxBlue: 40,
+        maxBlue: 30,
         maxRed: 20,
-        maxOrange: 10,
+        maxOrange: 3,
         maxMonster: 0,
         levelTime: 2000,
         blueSpawn: 20,
@@ -140,10 +140,10 @@ let levelInitValues = [
         levelDesc: "Click on orange balls to change them into red balls, so you can form even bigger chains!"
     },
     level3 = {
-        blue: 20,
+        blue: 15,
         red: 3,
         orange: 3,
-        maxBlue: 40,
+        maxBlue: 30,
         maxRed: 10,
         maxOrange: 3,
         maxMonster: 1,
@@ -156,14 +156,14 @@ let levelInitValues = [
         levelDesc: "Purple Monsters have appeared! They will eat your balls and grow larger over time, so click on them to kill them!"
     },
     level4 = {
-        blue: 20,
+        blue: 15,
         red: 3,
         orange: 3,
-        maxBlue: 40,
+        maxBlue: 30,
         maxRed: 20,
         maxOrange: 3,
         maxMonster: 3,
-        levelTime: 2000,
+        levelTime: 2500,
         blueSpawn: 20,
         redSpawn: 100,
         orangeSpawn: 30,
@@ -172,19 +172,19 @@ let levelInitValues = [
         levelDesc: "This hard level has more of everything. Think you can survive?"
     },
     level5 = {
-        blue: 30,
+        blue: 20,
         red: 3,
         orange: 3,
-        maxBlue: 60,
+        maxBlue: 40,
         maxRed: 20,
         maxOrange: 3,
         maxMonster: 5,
-        levelTime: 1200,
+        levelTime: 3000,
         blueSpawn: 20,
         redSpawn: 200,
         orangeSpawn: 50,
         monsterSpawn: 200,
-        monsterGrow: 0.30,
+        monsterGrow: 0.25,
         levelDesc: "This is the nightmare difficulty level, challenge it if you dare!"
     }
 ]
@@ -473,6 +473,11 @@ function replenishBalls(gameCounter) {
     if (gameCounter%monsterSpawn===0) {
         if (monsterCount < maxMonster) {
             let newBall = ballGenerator(ballValues[3])
+            if (levelCount===5) {
+                newball.ballDX *= 2
+                newball.ballDY *= 2
+            }
+
             ballArray.push(newBall)
         }
     }
