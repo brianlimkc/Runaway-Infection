@@ -1,7 +1,7 @@
 let canvas = document.getElementById("myCanvas");
 let ctx = canvas.getContext("2d");
 let gameTime = 0
-let gameInterval = 10
+let gameInterval = 5
 let gameTick = Math.round(1000/gameInterval)
 let pCursor = {
     pX : canvas.width/2,
@@ -20,6 +20,7 @@ let levelScore = 0;
 let blueCount = 0;
 let redCount = 0;
 let orangeCount = 0;
+let chainCount = 0;
 
 let boomBallsArray = []
 let chainArray = []
@@ -76,9 +77,9 @@ let ballValues = [
     monster = {
         ballName: "monster",
         ballCol: 'purple',
-        ballRad: 20,
+        ballRad: 10,
         counter: 1,
-        ballSpeed: 2,
+        ballSpeed: 1.5,
         boomUpEnd: 1,
         boomDownStart: 1,
         boomUpSize: 0,
@@ -116,13 +117,13 @@ let levelInitValues = [
         maxBlue: 20,
         maxRed: 15,
         maxOrange: 0,
-        maxMonster: 0,
+        maxMonster: 0, // 0
         levelTime: 1200,
         blueSpawn: 20,
         redSpawn: 50,
         orangeSpawn: 2001,
         monsterSpawn: 2001,
-        monsterGrow: 0,
+        monsterGrow: 1,
         levelDesc: "Click on the blue and red balls to shoot them. Red balls will be linked by a line when they are close. Shoot red balls when they are linked for a bigger explosion!"
     },
     level2 = {
@@ -142,15 +143,15 @@ let levelInitValues = [
         levelDesc: "Click on orange balls to change them into red balls, so you can form even bigger chains!"
     },
     level3 = {
-        blue: 10,
+        blue: 20,
         red: 3,
         orange: 3,
-        maxBlue: 20,
+        maxBlue: 40,
         maxRed: 10,
         maxOrange: 3,
         maxMonster: 1,
         levelTime: 1200,
-        blueSpawn: 20,
+        blueSpawn: 10,
         redSpawn: 100,
         orangeSpawn: 30,
         monsterSpawn: 400,
@@ -158,15 +159,15 @@ let levelInitValues = [
         levelDesc: "Purple Monsters have appeared! They will eat your balls and grow larger over time, so click on them to kill them!"
     },
     level4 = {
-        blue: 15,
+        blue: 30,
         red: 3,
         orange: 3,
-        maxBlue: 30,
+        maxBlue: 60,
         maxRed: 20,
         maxOrange: 3,
         maxMonster: 3,
         levelTime: 1200,
-        blueSpawn: 20,
+        blueSpawn: 5,
         redSpawn: 100,
         orangeSpawn: 30,
         monsterSpawn: 300,
@@ -174,15 +175,15 @@ let levelInitValues = [
         levelDesc: "This hard level has more of everything. Think you can survive?"
     },
     level5 = {
-        blue: 20,
+        blue: 40,
         red: 3,
         orange: 3,
-        maxBlue: 40,
+        maxBlue: 80,
         maxRed: 20,
         maxOrange: 3,
         maxMonster: 5,
         levelTime: 1200,
-        blueSpawn: 20,
+        blueSpawn: 5,
         redSpawn: 200,
         orangeSpawn: 50,
         monsterSpawn: 200,
@@ -351,15 +352,21 @@ function drawLine(ballArrayTemp) {
 
 function collisionHandler(ballArray) {
 
+    // let chainSilence = true
+
     if (mouseClick) {
         boomBallsArray.forEach(function (boomObj) {
-            let playerShot = false
+            let blueFlag = false
+            if (boomObj.ballName === 'blue') {
+                blueFlag = true
+            }
 
+            let playerShot = false
             if (boomObj.ballName === "playerShot") {
                 playerShot = true
             }
 
-            if (!boomObj.faded) {
+            if (!boomObj.faded && !blueFlag) {
                 let boomX = boomObj.ballX
                 let boomY = boomObj.ballY
                 let boomRad = boomObj.ballRad
@@ -375,6 +382,7 @@ function collisionHandler(ballArray) {
                         }
                         console.log(boomRad + ' ' + aRad + ' ' + playerShot)
                         if (collideCheck(aX, aY, aRad, boomX, boomY, boomRad)) {
+                            chainSilence = false
                             chainObj.boomed = true
                             chainObj.ballRad = chainObj.chainRad
                             levelScore+=chainObj.pointsValue*2
@@ -385,6 +393,9 @@ function collisionHandler(ballArray) {
                 })
 
                 ballArray.forEach(function (ballObj) {
+
+
+
                     if (!ballObj.boomed) {
                         let aX = ballObj.ballX
                         let aY = ballObj.ballY
@@ -483,8 +494,8 @@ function replenishBalls(gameCounter) {
         if (monsterCount < maxMonster) {
             let newBall = ballGenerator(ballValues[3])
             if (levelCount===5) {
-                newball.ballDX *= 1.5
-                newball.ballDY *= 1.5
+                newball.ballDX *= 1.2
+                newball.ballDY *= 1.2
             }
             ballArray.push(newBall)
         }
@@ -504,11 +515,12 @@ function monsterMakan(ballArray) {
     })
 
     monsterArray.forEach(function(monstObj){
-        if (monstObj.ballRad <= 200) {
+        if (monstObj.ballRad <= 75) {
             monstObj.ballRad += levelInitValues[levelCount].monsterGrow
         } else {
-            monstObj.ballRad = 200
+            monstObj.ballRad = 75
         }
+        console.log(monstObj.ballRad)
         let aX = monstObj.ballX
         let aY = monstObj.ballY
         let aRad = monstObj.ballRad

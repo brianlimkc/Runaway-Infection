@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="696a24b5-8f7f-400d-8976-b3f9eca0f8e7" name="Default Changelist" comment="chain explosions are triggering properly but playershots are triggering chain explosions from out of range">
+    <list default="true" id="696a24b5-8f7f-400d-8976-b3f9eca0f8e7" name="Default Changelist" comment="Playershot accidentally triggering chain explosions fixed. now trying to limit max size of monsters">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/js/main.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/main.js" afterDir="false" />
     </list>
@@ -81,7 +81,7 @@
       <workItem from="1620610385127" duration="5888000" />
       <workItem from="1620618060419" duration="45992000" />
       <workItem from="1620783643935" duration="98000" />
-      <workItem from="1620783745052" duration="10522000" />
+      <workItem from="1620783745052" duration="16495000" />
     </task>
     <task id="LOCAL-00001" summary="Test commit using webstorm">
       <created>1620789426018</created>
@@ -97,7 +97,14 @@
       <option name="project" value="LOCAL" />
       <updated>1620792523146</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Playershot accidentally triggering chain explosions fixed. now trying to limit max size of monsters">
+      <created>1620795552287</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1620795552287</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -118,6 +125,7 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Test commit using webstorm" />
     <MESSAGE value="chain explosions are triggering properly but playershots are triggering chain explosions from out of range" />
-    <option name="LAST_COMMIT_MESSAGE" value="chain explosions are triggering properly but playershots are triggering chain explosions from out of range" />
+    <MESSAGE value="Playershot accidentally triggering chain explosions fixed. now trying to limit max size of monsters" />
+    <option name="LAST_COMMIT_MESSAGE" value="Playershot accidentally triggering chain explosions fixed. now trying to limit max size of monsters" />
   </component>
 </project>
