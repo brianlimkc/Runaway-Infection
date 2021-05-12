@@ -1,6 +1,8 @@
 let canvas = document.getElementById("myCanvas");
 let ctx = canvas.getContext("2d");
 let gameTime = 0
+let gameInterval = 16.67
+let gameTick = Math.round(1000/gameInterval)
 let pCursor = {
     pX : canvas.width/2,
     pY : canvas.height/2,
@@ -51,7 +53,7 @@ let ballValues = [
         boomDownSize: 0.5,
         chainMult: false,
         pointsValue: 500,
-        chainRad: 100,
+        chainRad: 100,  // to change back to 100
         boomed: false,
         faded: false
     },
@@ -307,32 +309,27 @@ function collideCheck(aX,aY,aRad,bX,bY,bRad){
 
 function drawLine(ballArrayTemp) {
 
-    let detonateArray1 = []
+    let lineCheckArray = []
     chainArray = []
 
     ballArrayTemp.forEach(function(obj){
         if (obj.ballName === 'red') {
-            detonateArray1.push(obj)
+            lineCheckArray.push(obj)
         }
     })
 
-    detonateArray1.forEach(function(obj1){
+    lineCheckArray.forEach(function(obj1){
         let aX = obj1.ballX
         let aY = obj1.ballY
         let aRad = obj1.chainRad
-        // let chainFlag = false
-        // if (obj1.chainMult) {
-        //     chainFlag = true
-        // }
 
-        detonateArray1.forEach(function(obj2){
+        lineCheckArray.forEach(function(obj2){
             let bX = obj2.ballX
             let bY = obj2.ballY
             let bRad = obj2.chainRad
 
             if (!((aX===bX)&&(aY===bY))) {
                 if (collideCheck(aX, aY, aRad, bX, bY, bRad)) {
-                    // chainFlag = true
                     ctx.beginPath();
                     ctx.moveTo(aX, aY);
                     ctx.lineTo(bX, bY);
@@ -344,22 +341,11 @@ function drawLine(ballArrayTemp) {
                     chainArray.push(obj1)
                     obj2.chainMult = true
                     chainArray.push(obj2)
-                 } //else {
-                //     chainFlag = false
-                // }
+                 }
             }
-            // if (chainFlag) {
-            //     obj2.chainMult = true
-            //     chainArray.push(obj1)
-            // } else {chainFlag = false}
         })
-        // if (chainFlag) {
-        //     obj1.chainMult = true
-        //     chainArray.push(obj1)
-        // } else {chainFlag = false}
-
     })
-    //console.log(chainArray.length)
+    // console.log(chainArray.length)
 
 }
 
@@ -385,6 +371,7 @@ function collisionHandler(ballArray) {
                         let aRad = chainObj.chainRad
                         if (playerShot) {
                             aRad = chainObj.ballRad
+                            console.log(aRad)
                         }
 
                         if (collideCheck(aX, aY, aRad, boomX, boomY, boomRad)) {
@@ -411,6 +398,10 @@ function collisionHandler(ballArray) {
                             monsterFlag = true
                         }
 
+                        if (ballObj.chainMult) {
+                            aRad = ballObj.chainRad
+                        }
+
                         if (playerShot && orangeFlag && (collideCheck(aX, aY, aRad, boomX, boomY, boomRad))) {
                             ballObj.ballName = "red"
                             ballObj.ballCol = '#ff479c'
@@ -425,6 +416,11 @@ function collisionHandler(ballArray) {
                         } else if (collideCheck(aX, aY, aRad, boomX, boomY, boomRad)) {
                             ballObj.boomed = true
                             levelScore+=ballObj.pointsValue
+
+                            if (ballObj.chainMult) {
+                                ballObj.ballRad = ballObj.chainRad
+                            }
+
                             boomBallsArray.push(ballObj)
                         }
                     }
@@ -647,8 +643,8 @@ function timeKeeper() {
 
     gameTime--
 
-    if (gameTime%100) {
-        $timeLeft.innerHTML = (gameTime/100).toFixed(1)
+    if (gameTime%gameTick) {
+        $timeLeft.innerHTML = (gameTime/gameTick).toFixed(1)
     }
 
     if (gameTime<=0) {
@@ -694,7 +690,7 @@ function mainGame(){
 
     gameTime = levelInitValues[levelCount].levelTime
 
-    gameRun = setInterval(draw, 10);
+    gameRun = setInterval(draw, gameInterval);
 }
 
 let $mainScreen = document.getElementById("main");
