@@ -320,10 +320,10 @@ function drawLine(ballArrayTemp) {
         let aX = obj1.ballX
         let aY = obj1.ballY
         let aRad = obj1.chainRad
-        let chainFlag = false
-        if (obj1.chainMult) {
-            chainFlag = true
-        }
+        // let chainFlag = false
+        // if (obj1.chainMult) {
+        //     chainFlag = true
+        // }
 
         detonateArray1.forEach(function(obj2){
             let bX = obj2.ballX
@@ -332,7 +332,7 @@ function drawLine(ballArrayTemp) {
 
             if (!((aX===bX)&&(aY===bY))) {
                 if (collideCheck(aX, aY, aRad, bX, bY, bRad)) {
-                    chainFlag = true
+                    // chainFlag = true
                     ctx.beginPath();
                     ctx.moveTo(aX, aY);
                     ctx.lineTo(bX, bY);
@@ -340,19 +340,23 @@ function drawLine(ballArrayTemp) {
                     ctx.strokeStyle = '#ff479c';
                     ctx.stroke();
                     ctx.closePath();
-                } else {
-                    chainFlag = false
-                }
+                    obj1.chainMult = true
+                    chainArray.push(obj1)
+                    obj2.chainMult = true
+                    chainArray.push(obj2)
+                 } //else {
+                //     chainFlag = false
+                // }
             }
-            if (chainFlag) {
-                obj2.chainMult = true
-                chainArray.push(obj1)
-            } else {chainFlag = false}
+            // if (chainFlag) {
+            //     obj2.chainMult = true
+            //     chainArray.push(obj1)
+            // } else {chainFlag = false}
         })
-        if (chainFlag) {
-            obj1.chainMult = true
-            chainArray.push(obj1)
-        } else {chainFlag = false}
+        // if (chainFlag) {
+        //     obj1.chainMult = true
+        //     chainArray.push(obj1)
+        // } else {chainFlag = false}
 
     })
     //console.log(chainArray.length)

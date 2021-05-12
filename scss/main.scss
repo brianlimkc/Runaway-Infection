@@ -98,11 +98,13 @@
     .Game-Area {
       grid-area: Game-Area;
       background-color: white;
+      cursor: none;
 
       .canvas {
         margin: auto;
         background: white;
         display: block;
+
       }
     }
     .ScoringRight {

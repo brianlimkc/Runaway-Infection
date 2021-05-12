@@ -84,6 +84,7 @@
 .grid-container-game .Main-Panel .Game-Area {
   grid-area: Game-Area;
   background-color: white;
+  cursor: none;
 }
 .grid-container-game .Main-Panel .Game-Area .canvas {
   margin: auto;
