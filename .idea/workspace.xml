@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="696a24b5-8f7f-400d-8976-b3f9eca0f8e7" name="Default Changelist" comment="Playershot accidentally triggering chain explosions fixed. now trying to limit max size of monsters">
+    <list default="true" id="696a24b5-8f7f-400d-8976-b3f9eca0f8e7" name="Default Changelist" comment="Made balance changes&#10;Modified purple monster behavior = faster and limted max size">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/js/main.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/main.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -81,7 +82,7 @@
       <workItem from="1620610385127" duration="5888000" />
       <workItem from="1620618060419" duration="45992000" />
       <workItem from="1620783643935" duration="98000" />
-      <workItem from="1620783745052" duration="16495000" />
+      <workItem from="1620783745052" duration="19405000" />
     </task>
     <task id="LOCAL-00001" summary="Test commit using webstorm">
       <created>1620789426018</created>
@@ -104,7 +105,14 @@
       <option name="project" value="LOCAL" />
       <updated>1620795552287</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Made balance changes&#10;Modified purple monster behavior = faster and limted max size">
+      <created>1620808569336</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1620808569336</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -126,6 +134,19 @@
     <MESSAGE value="Test commit using webstorm" />
     <MESSAGE value="chain explosions are triggering properly but playershots are triggering chain explosions from out of range" />
     <MESSAGE value="Playershot accidentally triggering chain explosions fixed. now trying to limit max size of monsters" />
-    <option name="LAST_COMMIT_MESSAGE" value="Playershot accidentally triggering chain explosions fixed. now trying to limit max size of monsters" />
+    <MESSAGE value="Made balance changes&#10;Modified purple monster behavior = faster and limted max size" />
+    <option name="LAST_COMMIT_MESSAGE" value="Made balance changes&#10;Modified purple monster behavior = faster and limted max size" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/js/main.js</url>
+          <line>393</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="5" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

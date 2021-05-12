@@ -1,7 +1,7 @@
 let canvas = document.getElementById("myCanvas");
 let ctx = canvas.getContext("2d");
 let gameTime = 0
-let gameInterval = 5
+let gameInterval = 50
 let gameTick = Math.round(1000/gameInterval)
 let pCursor = {
     pX : canvas.width/2,
@@ -20,7 +20,10 @@ let levelScore = 0;
 let blueCount = 0;
 let redCount = 0;
 let orangeCount = 0;
-let chainCount = 0;
+
+ctx.font = "20px Georgia"; // font
+
+let chainCount = 0; // chain counter
 
 let boomBallsArray = []
 let chainArray = []
@@ -118,9 +121,9 @@ let levelInitValues = [
         maxRed: 15,
         maxOrange: 0,
         maxMonster: 0, // 0
-        levelTime: 1200,
+        levelTime: 10000,  // 1200
         blueSpawn: 20,
-        redSpawn: 50,
+        redSpawn: 20, // 50
         orangeSpawn: 2001,
         monsterSpawn: 2001,
         monsterGrow: 1,
@@ -352,7 +355,7 @@ function drawLine(ballArrayTemp) {
 
 function collisionHandler(ballArray) {
 
-    // let chainSilence = true
+    let arraySilence = true
 
     if (mouseClick) {
         boomBallsArray.forEach(function (boomObj) {
@@ -380,12 +383,15 @@ function collisionHandler(ballArray) {
                             aRad = chainObj.ballRad
 
                         }
-                        console.log(boomRad + ' ' + aRad + ' ' + playerShot)
                         if (collideCheck(aX, aY, aRad, boomX, boomY, boomRad)) {
-                            chainSilence = false
+                            arraySilence = false
+                            chainCount++
+                            console.log(chainCount)
                             chainObj.boomed = true
-                            chainObj.ballRad = chainObj.chainRad
-                            levelScore+=chainObj.pointsValue*2
+                            chainObj.ballRad = chainObj.chainRad * (1 + (0.2 * chainCount))
+                            levelScore+=chainObj.pointsValue*2 * (1 + (0.2 * chainCount))
+                            ctx.fillText(chainCount, aX, aY);
+                            $chainCount.innerHTML = chainCount
                             boomBallsArray.push(chainObj)
                         }
                     }
@@ -393,8 +399,6 @@ function collisionHandler(ballArray) {
                 })
 
                 ballArray.forEach(function (ballObj) {
-
-
 
                     if (!ballObj.boomed) {
                         let aX = ballObj.ballX
@@ -439,7 +443,15 @@ function collisionHandler(ballArray) {
                 })
             }
         })
+
     }
+
+    if (!arraySilence){
+        chainCount = 0
+        console.log('reset')
+    }
+
+
 }
 
 function replenishBalls(gameCounter) {
@@ -722,7 +734,7 @@ let $levelScore = document.getElementById("levelScore")
 let $levelReport = document.getElementById("levelReport")
 let $finalReport = document.getElementById("finalReport")
 let $timeLeft = document.getElementById("timeLeft")
-
+let $chainCount = document.getElementById("chainCount")
 
 // Get the modal
 let $preGame = document.getElementById("preGame");
