@@ -115,7 +115,7 @@ let levelInitValues = [
         maxRed: 15,
         maxOrange: 0,
         maxMonster: 0,
-        levelTime: 2000,
+        levelTime: 1200,
         blueSpawn: 20,
         redSpawn: 50,
         orangeSpawn: 2001,
@@ -147,7 +147,7 @@ let levelInitValues = [
         maxRed: 10,
         maxOrange: 3,
         maxMonster: 1,
-        levelTime: 2000,
+        levelTime: 1200,
         blueSpawn: 20,
         redSpawn: 100,
         orangeSpawn: 30,
@@ -163,7 +163,7 @@ let levelInitValues = [
         maxRed: 20,
         maxOrange: 3,
         maxMonster: 3,
-        levelTime: 2500,
+        levelTime: 1200,
         blueSpawn: 20,
         redSpawn: 100,
         orangeSpawn: 30,
@@ -179,7 +179,7 @@ let levelInitValues = [
         maxRed: 20,
         maxOrange: 3,
         maxMonster: 5,
-        levelTime: 3000,
+        levelTime: 1200,
         blueSpawn: 20,
         redSpawn: 200,
         orangeSpawn: 50,
@@ -321,7 +321,9 @@ function drawLine(ballArrayTemp) {
         let aY = obj1.ballY
         let aRad = obj1.chainRad
         let chainFlag = false
-
+        if (obj1.chainMult) {
+            chainFlag = true
+        }
 
         detonateArray1.forEach(function(obj2){
             let bX = obj2.ballX
@@ -338,16 +340,19 @@ function drawLine(ballArrayTemp) {
                     ctx.strokeStyle = '#ff479c';
                     ctx.stroke();
                     ctx.closePath();
+                } else {
+                    chainFlag = false
                 }
             }
             if (chainFlag) {
                 obj2.chainMult = true
-            }
+                chainArray.push(obj1)
+            } else {chainFlag = false}
         })
         if (chainFlag) {
             obj1.chainMult = true
             chainArray.push(obj1)
-        }
+        } else {chainFlag = false}
 
     })
     //console.log(chainArray.length)
@@ -380,7 +385,7 @@ function collisionHandler(ballArray) {
 
                         if (collideCheck(aX, aY, aRad, boomX, boomY, boomRad)) {
                             chainObj.boomed = true
-                            chainObj.ballRad = chainObj.chainRad - 5
+                            chainObj.ballRad = chainObj.chainRad
                             levelScore+=chainObj.pointsValue*2
                             boomBallsArray.push(chainObj)
                         }
@@ -417,7 +422,6 @@ function collisionHandler(ballArray) {
                             ballObj.boomed = true
                             levelScore+=ballObj.pointsValue
                             boomBallsArray.push(ballObj)
-
                         }
                     }
 
@@ -480,7 +484,6 @@ function replenishBalls(gameCounter) {
                 newball.ballDX *= 2
                 newball.ballDY *= 2
             }
-
             ballArray.push(newBall)
         }
     }
@@ -561,6 +564,16 @@ function arrayHousekeeping() {
             }
         }
     }
+
+    // if (chainArray.length >=1){
+    //     let chainLength = chainArray.length
+    //     for (let i = chainLength; i >= 0 ; i--) {
+    //         if (!chainArray[i].chainMult) {
+    //             chainArray.splice(i, 1)
+    //         }
+    //
+    //     }
+    // }
 }
 
 // Event listeners
@@ -642,14 +655,14 @@ function timeKeeper() {
 
         if (levelCount===4) {
             $finalReport.innerHTML = `Your level score is ${levelScore} and your total score is ${gameScore}!!`
-            endGame.style.display = "block"
+            $endGame.style.display = "block"
             levelCount=0
 
         } else {
             levelCount++
             $levelReport.innerHTML = `You have scored ${levelScore} points. Well Done!`
-            levelDesc.innerHTML = levelInitValues[levelCount].levelDesc
-            postGame.style.display = "block"
+            $levelDesc.innerHTML = levelInitValues[levelCount].levelDesc
+            $postGame.style.display = "block"
 
         }
     }
@@ -680,9 +693,9 @@ function mainGame(){
     gameRun = setInterval(draw, 10);
 }
 
-let mainScreen = document.getElementById("main");
-let gameScreen = document.getElementById("game");
-let levelDesc = document.getElementById("levelDesc")
+let $mainScreen = document.getElementById("main");
+let $gameScreen = document.getElementById("game");
+let $levelDesc = document.getElementById("levelDesc")
 
 let $currentLevel = document.getElementById("currentLevel")
 let $totalScore = document.getElementById("totalScore")
@@ -693,44 +706,44 @@ let $timeLeft = document.getElementById("timeLeft")
 
 
 // Get the modal
-let preGame = document.getElementById("preGame");
-let postGame = document.getElementById("postGame");
-let endGame = document.getElementById("endGame");
+let $preGame = document.getElementById("preGame");
+let $postGame = document.getElementById("postGame");
+let $endGame = document.getElementById("endGame");
 
 
 // Get the button that opens the modal
-let btn = document.getElementById("myBtn");
+let $btn = document.getElementById("myBtn");
 
 
 // Get the <span> element that closes the modal
-let closeBtn = document.getElementById("closeBtn");
-let nextBtn = document.getElementById("nextBtn");
-let endBtn = document.getElementById("endBtn");
+let $closeBtn = document.getElementById("closeBtn");
+let $nextBtn = document.getElementById("nextBtn");
+let $endBtn = document.getElementById("endBtn");
 
 // When the user clicks on the button, open the modal
-btn.onclick = function() {
-    mainScreen.style.display = "none";
-    gameScreen.style.display = "flex";
-    preGame.style.display = "block";
-    levelDesc.innerHTML = levelInitValues[levelCount].levelDesc
+$btn.onclick = function() {
+    $mainScreen.style.display = "none";
+    $gameScreen.style.display = "flex";
+    $preGame.style.display = "block";
+    $levelDesc.innerHTML = levelInitValues[levelCount].levelDesc
 }
 
 // When the user clicks on <span> (x), close the modal
-closeBtn.onclick = function() {
-    preGame.style.display = "none"
+$closeBtn.onclick = function() {
+    $preGame.style.display = "none"
     mainGame()
 }
 
 
-nextBtn.onclick = function() {
-    preGame.style.display = "block";
-    postGame.style.display = "none"
+$nextBtn.onclick = function() {
+    $preGame.style.display = "block";
+    $postGame.style.display = "none"
 }
 
-endBtn.onclick = function() {
-    mainScreen.style.display = "flex";
-    gameScreen.style.display = "none";
-    endGame.style.display = "none";
+$endBtn.onclick = function() {
+    $mainScreen.style.display = "flex";
+    $gameScreen.style.display = "none";
+    $endGame.style.display = "none";
     levelScore = 0
     gameScore = 0
     $totalScore.innerHTML = gameScore
