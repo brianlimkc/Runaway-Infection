@@ -1,7 +1,7 @@
 let canvas = document.getElementById("myCanvas");
 let ctx = canvas.getContext("2d");
 let gameTime = 0
-let gameInterval = 16.67
+let gameInterval = 10
 let gameTick = Math.round(1000/gameInterval)
 let pCursor = {
     pX : canvas.width/2,
@@ -29,7 +29,7 @@ let ballValues = [
         ballName: "blue",
         ballCol: '#35b5ff',
         ballRad: 10,
-        ballSpeed: 3,
+        ballSpeed: 2,
         counter: 30,
         boomUpEnd: 15,
         boomDownStart: 15,
@@ -46,9 +46,9 @@ let ballValues = [
         ballCol: '#ff479c',
         ballRad: 10,
         ballSpeed: 1,
-        counter: 50,
-        boomUpEnd: 25,
-        boomDownStart: 25,
+        counter: 30, // 50
+        boomUpEnd: 15, //25
+        boomDownStart: 15, //25
         boomUpSize: 0.5,
         boomDownSize: 0.5,
         chainMult: false,
@@ -62,9 +62,9 @@ let ballValues = [
         ballCol: 'orange',
         ballRad: 10,
         ballSpeed: 1,
-        counter: 50,
-        boomUpEnd: 25,
-        boomDownStart: 25,
+        counter: 30,
+        boomUpEnd: 15,
+        boomDownStart: 15,
         boomUpSize: 0.5,
         boomDownSize: 0.5,
         chainMult: false,
@@ -78,7 +78,7 @@ let ballValues = [
         ballCol: 'purple',
         ballRad: 20,
         counter: 1,
-        ballSpeed: 0.5,
+        ballSpeed: 2,
         boomUpEnd: 1,
         boomDownStart: 1,
         boomUpSize: 0,
@@ -110,10 +110,10 @@ let levelCount = 0
 
 let levelInitValues = [
     level1 = {
-        blue: 15,
+        blue: 10,
         red: 1,
         orange: 0,
-        maxBlue: 30,
+        maxBlue: 20,
         maxRed: 15,
         maxOrange: 0,
         maxMonster: 0,
@@ -126,10 +126,10 @@ let levelInitValues = [
         levelDesc: "Click on the blue and red balls to shoot them. Red balls will be linked by a line when they are close. Shoot red balls when they are linked for a bigger explosion!"
     },
     level2 = {
-        blue: 15,
+        blue: 10,
         red: 1,
         orange: 1,
-        maxBlue: 30,
+        maxBlue: 20,
         maxRed: 20,
         maxOrange: 3,
         maxMonster: 0,
@@ -142,10 +142,10 @@ let levelInitValues = [
         levelDesc: "Click on orange balls to change them into red balls, so you can form even bigger chains!"
     },
     level3 = {
-        blue: 15,
+        blue: 10,
         red: 3,
         orange: 3,
-        maxBlue: 30,
+        maxBlue: 20,
         maxRed: 10,
         maxOrange: 3,
         maxMonster: 1,
@@ -371,9 +371,9 @@ function collisionHandler(ballArray) {
                         let aRad = chainObj.chainRad
                         if (playerShot) {
                             aRad = chainObj.ballRad
-                            console.log(aRad)
-                        }
 
+                        }
+                        console.log(boomRad + ' ' + aRad + ' ' + playerShot)
                         if (collideCheck(aX, aY, aRad, boomX, boomY, boomRad)) {
                             chainObj.boomed = true
                             chainObj.ballRad = chainObj.chainRad
@@ -398,7 +398,7 @@ function collisionHandler(ballArray) {
                             monsterFlag = true
                         }
 
-                        if (ballObj.chainMult) {
+                        if (ballObj.chainMult && !playerShot) {
                             aRad = ballObj.chainRad
                         }
 
@@ -452,7 +452,9 @@ function replenishBalls(gameCounter) {
         if (obj.ballName==='orange') {orangeCount++}
         if (obj.ballName==='monster') {
             monsterCount++
-            obj.ballRad += levelInitValues[levelCount].monsterGrow
+            // if (obj.ballRad <= 200) {
+            //     obj.ballRad += levelInitValues[levelCount].monsterGrow
+            // }
         }
     })
 
@@ -481,8 +483,8 @@ function replenishBalls(gameCounter) {
         if (monsterCount < maxMonster) {
             let newBall = ballGenerator(ballValues[3])
             if (levelCount===5) {
-                newball.ballDX *= 2
-                newball.ballDY *= 2
+                newball.ballDX *= 1.5
+                newball.ballDY *= 1.5
             }
             ballArray.push(newBall)
         }
@@ -502,6 +504,11 @@ function monsterMakan(ballArray) {
     })
 
     monsterArray.forEach(function(monstObj){
+        if (monstObj.ballRad <= 200) {
+            monstObj.ballRad += levelInitValues[levelCount].monsterGrow
+        } else {
+            monstObj.ballRad = 200
+        }
         let aX = monstObj.ballX
         let aY = monstObj.ballY
         let aRad = monstObj.ballRad

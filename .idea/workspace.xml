@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="696a24b5-8f7f-400d-8976-b3f9eca0f8e7" name="Default Changelist" comment="Test commit using webstorm">
+    <list default="true" id="696a24b5-8f7f-400d-8976-b3f9eca0f8e7" name="Default Changelist" comment="chain explosions are triggering properly but playershots are triggering chain explosions from out of range">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/js/main.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/main.js" afterDir="false" />
     </list>
@@ -81,7 +81,7 @@
       <workItem from="1620610385127" duration="5888000" />
       <workItem from="1620618060419" duration="45992000" />
       <workItem from="1620783643935" duration="98000" />
-      <workItem from="1620783745052" duration="7518000" />
+      <workItem from="1620783745052" duration="10522000" />
     </task>
     <task id="LOCAL-00001" summary="Test commit using webstorm">
       <created>1620789426018</created>
@@ -90,7 +90,14 @@
       <option name="project" value="LOCAL" />
       <updated>1620789426018</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="chain explosions are triggering properly but playershots are triggering chain explosions from out of range">
+      <created>1620792523146</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1620792523146</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -110,6 +117,7 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Test commit using webstorm" />
-    <option name="LAST_COMMIT_MESSAGE" value="Test commit using webstorm" />
+    <MESSAGE value="chain explosions are triggering properly but playershots are triggering chain explosions from out of range" />
+    <option name="LAST_COMMIT_MESSAGE" value="chain explosions are triggering properly but playershots are triggering chain explosions from out of range" />
   </component>
 </project>
