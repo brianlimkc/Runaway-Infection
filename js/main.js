@@ -20,8 +20,10 @@ let levelScore = 0;
 let blueCount = 0;
 let redCount = 0;
 let orangeCount = 0;
+let importRate = 0;
+let spreadRate = 0;
 
-ctx.font = "20px Georgia"; // font
+// ctx.font = "20px Georgia"; // font
 
 let chainCount = 0; // chain counter
 
@@ -33,10 +35,10 @@ let ballValues = [
         ballName: "blue",
         ballCol: '#35b5ff',
         ballRad: 10,
-        ballSpeed: 2,
-        counter: 30,
-        boomUpEnd: 15,
-        boomDownStart: 15,
+        ballSpeed: 3,
+        counter: 12,
+        boomUpEnd: 6,
+        boomDownStart: 6,
         boomUpSize: 1,
         boomDownSize: 1,
         chainMult: false,
@@ -50,14 +52,14 @@ let ballValues = [
         ballCol: '#ff479c',
         ballRad: 10,
         ballSpeed: 1,
-        counter: 30, // 50
-        boomUpEnd: 15, //25
-        boomDownStart: 15, //25
+        counter: 12, // 50
+        boomUpEnd: 6, //25
+        boomDownStart: 6, //25
         boomUpSize: 0.1,
         boomDownSize: 0.1,
         chainMult: false,
         pointsValue: 500,
-        chainRad: 60,  // to change back to 100
+        chainRad: 80,  // to change back to 100
         boomed: false,
         faded: false
     },
@@ -66,14 +68,14 @@ let ballValues = [
         ballCol: 'orange',
         ballRad: 10,
         ballSpeed: 1,
-        counter: 30,
-        boomUpEnd: 15,
-        boomDownStart: 15,
+        counter: 12,
+        boomUpEnd: 6,
+        boomDownStart: 6,
         boomUpSize: 0.1,
         boomDownSize: 0.1,
         chainMult: false,
         pointsValue: 200,
-        chainRad: 60,
+        chainRad: 80,
         boomed: false,
         faded: false
     },
@@ -117,40 +119,44 @@ let levelInitValues = [
         blue: 10, // 10
         red: 1, // 1
         orange: 0,
-        maxBlue: 100, //20
+        maxBlue: 40, //20
         maxRed: 7, //15
         maxOrange: 0,
-        maxMonster: 0, // 0
-        levelTime: 10000,  // 1200
+        maxMonster: 5, // 0
+        levelTime: 2000,  // 2000
         blueSpawn: 20,
         redSpawn: 20, // 50
         orangeSpawn: 2001,
-        monsterSpawn: 2001,
+        monsterSpawn: 400, //2001
         monsterGrow: 1,
+        importRate: 200,
+        spreadRate: 3,
         levelDesc: "Click on the blue and red balls to shoot them. Red balls will be linked by a line when they are close. Shoot red balls when they are linked for a bigger explosion!"
     },
     level2 = {
         blue: 10,
         red: 1,
         orange: 1,
-        maxBlue: 20,
-        maxRed: 20,
+        maxBlue: 60,
+        maxRed: 10,
         maxOrange: 3,
         maxMonster: 0,
         levelTime: 2000,
-        blueSpawn: 20,
+        blueSpawn: 30,
         redSpawn: 100,
         orangeSpawn: 30,
         monsterSpawn: 2001,
         monsterGrow: 0,
+        importRate: 200,
+        spreadRate: 3,
         levelDesc: "Click on orange balls to change them into red balls, so you can form even bigger chains!"
     },
     level3 = {
-        blue: 20,
+        blue: 10,
         red: 3,
         orange: 3,
-        maxBlue: 40,
-        maxRed: 10,
+        maxBlue: 60,
+        maxRed: 50,
         maxOrange: 3,
         maxMonster: 1,
         levelTime: 1200,
@@ -159,22 +165,26 @@ let levelInitValues = [
         orangeSpawn: 30,
         monsterSpawn: 400,
         monsterGrow: 0.05,
+        importRate: 100,
+        spreadRate: 5,
         levelDesc: "Purple Monsters have appeared! They will eat your balls and grow larger over time, so click on them to kill them!"
     },
     level4 = {
-        blue: 30,
+        blue: 10,
         red: 3,
         orange: 3,
-        maxBlue: 60,
-        maxRed: 20,
+        maxBlue: 80,
+        maxRed: 5,
         maxOrange: 3,
         maxMonster: 3,
-        levelTime: 1200,
-        blueSpawn: 5,
+        levelTime: 2000,
+        blueSpawn: 30,
         redSpawn: 100,
         orangeSpawn: 30,
         monsterSpawn: 300,
         monsterGrow: 0.15,
+        importRate: 100,
+        spreadRate: 7,
         levelDesc: "This hard level has more of everything. Think you can survive?"
     },
     level5 = {
@@ -185,12 +195,14 @@ let levelInitValues = [
         maxRed: 20,
         maxOrange: 3,
         maxMonster: 5,
-        levelTime: 1200,
-        blueSpawn: 5,
+        levelTime: 2000,
+        blueSpawn: 30,
         redSpawn: 200,
         orangeSpawn: 50,
         monsterSpawn: 200,
         monsterGrow: 0.25,
+        importRate: 50,
+        spreadRate: 9,
         levelDesc: "This is the nightmare difficulty level, challenge it if you dare!"
     }
 ]
@@ -318,6 +330,13 @@ function ballDrawMove(ballArray) {
             let ballDY = ballObj.ballDY
             let ballRad = ballObj.ballRad
 
+            if ((ballDX*ballDX+ballDY*ballDY)>2)  {
+                ballDX *= 0.6
+                ballDY *= 0.6
+                //console.log('slowdown' + ballDX + ' ' + ballDY)
+            }
+
+
             drawBall(ballX, ballY, ballCol, ballRad);
 
             if (ballX + ballDX > canvas.width - ballRad || ballX + ballDX < ballRad) {
@@ -376,6 +395,17 @@ function infectBall(ballObj) {
     ballObj.ballCol = '#008A09'
 }
 
+function cureBall(ballObj) {
+    ballObj.ballName = 'blue'
+    ballObj.ballCol = '#35b5ff'
+}
+
+function turnRed(ballObj) {
+    ballObj.ballName = "red"
+    ballObj.ballCol = '#ff479c'
+    ballObj.pointsValue = 500
+}
+
 function bounceResolver(ballArray) {
 
     let bounceBallArray = []
@@ -387,7 +417,7 @@ function bounceResolver(ballArray) {
         }
     })
 
-    if (gameCounter%200===0) {
+    if (gameCounter%importRate===0) {
         randomInfection(bounceBallArray)
     }
 
@@ -415,27 +445,6 @@ function bounceResolver(ballArray) {
                         let yDist = Math.abs(aY - bY)
 
                         if ((xDist*xDist+yDist*yDist)-(sumRad*sumRad)<0) {
-                            let collAngle = Math.atan(yDist/xDist)
-                            let yShift = ((Math.sin(collAngle) * (sumRad + 3)) - yDist) * 0.5
-                            let xShift = ((Math.cos(collAngle) * (sumRad + 3)) - xDist) * 0.5
-
-                            // console.log(`xshift: ${xShift} yshift: ${yShift}`)
-
-                            if (aX <= bX) {
-                                aX-=xShift
-                                bX+=xShift
-                            } else {
-                                aX+=xShift
-                                bX-=xShift
-                            }
-
-                            if (aY <= bY) {
-                                aY-=yShift
-                                bY+=yShift
-                            } else {
-                                aY+=yShift
-                                bY-=yShift
-                            }
 
                             // console.log(collideCheck(aX,aY,aRad,bX,bY,bRad))
 
@@ -456,20 +465,42 @@ function bounceResolver(ballArray) {
                             obj1.isBounced = true
                             obj2.isBounced = true
 
+                            let collAngle = Math.atan(yDist/xDist)
+                            let yShift = ((Math.sin(collAngle) * (sumRad)) - yDist) * 0.5
+                            let xShift = ((Math.cos(collAngle) * (sumRad)) - xDist) * 0.5
+
+                            // console.log(`xshift: ${xShift} yshift: ${yShift}`)
+
+                            if (aX <= bX) {
+                                obj1.ballX-=xShift
+                                obj2.ballX+=xShift
+                            } else {
+                                obj1.ballX+=xShift
+                                obj2.ballX-=xShift
+                            }
+
+                            if (aY <= bY) {
+                                obj1.ballY-=yShift
+                                obj2.ballY+=yShift
+                            } else {
+                                obj1.ballY+=yShift
+                                obj2.ballY-=yShift
+                            }
+
 
                             let isBall1Infected = (obj1.ballName === 'covid')
                             let isBall2Infected = (obj2.ballName === 'covid')
-                            let isBall1Red = (obj1.ballName === 'red')
-                            let isBall2Red = (obj2.ballName === 'red')
+                            let isBall1Blue = (obj1.ballName === 'blue')
+                            let isBall2Blue = (obj2.ballName === 'blue')
 
 
-                            if (isBall1Infected && !isBall2Infected && !isBall1Red) {
-                                if ((Math.floor(Math.random() * 10)) <= 4) {
+                            if (isBall1Infected && !isBall2Infected && isBall2Blue) {
+                                if ((Math.floor(Math.random() * 10)) <= spreadRate) {
                                     infectBall(obj2)
                                     console.log('infection 1 to 2')
                                 }
-                            } else if (!isBall1Infected && isBall2Infected && !isBall2Red) {
-                                if ((Math.floor(Math.random() * 10)) <= 4) {
+                            } else if (!isBall1Infected && isBall2Infected && isBall1Blue) {
+                                if ((Math.floor(Math.random() * 10)) <= spreadRate) {
                                     infectBall(obj1)
                                     console.log('infection 2 to 1')
                                 }
@@ -531,9 +562,9 @@ function collisionHandler(ballArray) {
 
     if (mouseClick) {
         boomBallsArray.forEach(function (boomObj) {
+            let isPlayerShot = (boomObj.ballName === "playerShot")
             let isBlue = (boomObj.ballName === 'blue')
             let isCovid = (boomObj.ballName === 'covid')
-            let isPlayerShot = (boomObj.ballName === "playerShot")
 
             if (!boomObj.faded && (!isBlue || !isCovid)) {
                 let boomX = boomObj.ballX
@@ -554,8 +585,8 @@ function collisionHandler(ballArray) {
                             chainCount++
                             console.log(chainCount)
                             chainObj.boomed = true
-                            chainObj.ballRad = chainObj.chainRad * (1 + (0.2 * chainCount))
-                            levelScore+=chainObj.pointsValue*2 * (1 + (0.2 * chainCount))
+                            chainObj.ballRad = chainObj.chainRad * (1 + (0.1 * chainCount))
+                            levelScore+=chainObj.pointsValue*2 * (1 + (0.1 * chainCount))
                             ctx.fillText(chainCount, aX, aY);
                             $chainCount.innerHTML = chainCount
                             boomBallsArray.push(chainObj)
@@ -570,6 +601,8 @@ function collisionHandler(ballArray) {
                         let aX = ballObj.ballX
                         let aY = ballObj.ballY
                         let aRad = ballObj.ballRad
+                        let isBlue = (ballObj.ballName === 'blue')
+                        let isCovid = (ballObj.ballName === 'covid')
                         let isOrange = (ballObj.ballName === 'orange')
                         let isMonster = (ballObj.ballName === 'monster')
 
@@ -578,9 +611,7 @@ function collisionHandler(ballArray) {
                         }
 
                         if (isPlayerShot && isOrange && (collideCheck(aX, aY, aRad, boomX, boomY, boomRad))) {
-                            ballObj.ballName = "red"
-                            ballObj.ballCol = '#ff479c'
-                            ballObj.pointsValue = 500
+                            turnRed(ballObj)
                         } else if (isPlayerShot && isMonster && (collideCheck(aX, aY, aRad, boomX, boomY, boomRad))) {
                             if (ballObj.ballRad <= 10) {
                                 ballObj.boomed = true
@@ -588,7 +619,9 @@ function collisionHandler(ballArray) {
                             } else {
                                 ballObj.ballRad -= 10
                             }
-                        } else if (collideCheck(aX, aY, aRad, boomX, boomY, boomRad)) {
+                        } else if (isCovid && (collideCheck(aX, aY, aRad, boomX, boomY, boomRad)))  {
+                            cureBall(ballObj)
+                        } else if (!isBlue && collideCheck(aX, aY, aRad, boomX, boomY, boomRad)) {
                             ballObj.boomed = true
                             levelScore+=ballObj.pointsValue
 
@@ -617,6 +650,7 @@ function collisionHandler(ballArray) {
 function replenishBalls(gameCounter) {
 
     let blueCount = 0
+    let covidCount = 0
     let redCount = 0
     let orangeCount = 0
     let monsterCount = 0
@@ -631,10 +665,13 @@ function replenishBalls(gameCounter) {
 
     ballArray.forEach(function(obj){
         if (obj.ballName==='blue') {blueCount++}
+        if (obj.ballName==='covid') {covidCount++}
         if (obj.ballName==='red') {redCount++}
         if (obj.ballName==='orange') {orangeCount++}
         if (obj.ballName==='monster') {monsterCount++}
     })
+
+    $infectedPct.innerHTML = `${((covidCount/(covidCount+blueCount))*100).toFixed(1)}% infected`
 
     // console.log(`blue: ${blueCount} red: ${redCount} orange: ${orangeCount} monster: ${monsterCount}`)
 
@@ -684,7 +721,7 @@ function replenishBalls(gameCounter) {
     }
 
     if (gameCounter%blueSpawn===0) {
-        if (blueCount < maxBlue) {
+        if ((blueCount+covidCount) < maxBlue) {
             let newBall = ballGenerator(ballValues[0])
             ballArray.forEach(function(obj){
                 let aX = obj.ballX
@@ -701,6 +738,11 @@ function replenishBalls(gameCounter) {
                     bRad = newBall.ballRad
                 }
             })
+
+            if (Math.floor(Math.random()*10)<1) {
+                infectBall(newBall)
+            }
+
             ballArray.push(newBall)
         }
     }
@@ -940,9 +982,12 @@ function mainGame(){
     gameCounter = 0;
     boomBallsArray = []
     chainArray = []
+
     ballArray = fillBallArray(levelInitValues[levelCount])
 
     gameTime = levelInitValues[levelCount].levelTime
+    importRate = levelInitValues[levelCount].importRate
+    spreadRate = levelInitValues[levelCount].spreadRate
 
     gameRun = setInterval(draw, gameInterval);
 }
@@ -958,6 +1003,7 @@ let $levelReport = document.getElementById("levelReport")
 let $finalReport = document.getElementById("finalReport")
 let $timeLeft = document.getElementById("timeLeft")
 let $chainCount = document.getElementById("chainCount")
+let $infectedPct = document.getElementById("infectedPct")
 
 // Get the modal
 let $preGame = document.getElementById("preGame");

@@ -1,13 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="696a24b5-8f7f-400d-8976-b3f9eca0f8e7" name="Default Changelist" comment="expanding chain boom sort of working">
+    <list default="true" id="696a24b5-8f7f-400d-8976-b3f9eca0f8e7" name="Default Changelist" comment="midway through major rework of mechanics">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/css/main.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/main.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/css/main.css.map" beforeDir="false" afterPath="$PROJECT_DIR$/css/main.css.map" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/js/main.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/main.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scss/main.scss" beforeDir="false" afterPath="$PROJECT_DIR$/scss/main.scss" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -87,7 +84,7 @@
       <workItem from="1620783643935" duration="98000" />
       <workItem from="1620783745052" duration="20034000" />
       <workItem from="1620868028364" duration="638000" />
-      <workItem from="1620870510687" duration="14329000" />
+      <workItem from="1620870510687" duration="27056000" />
     </task>
     <task id="LOCAL-00001" summary="Test commit using webstorm">
       <created>1620789426018</created>
@@ -124,7 +121,14 @@
       <option name="project" value="LOCAL" />
       <updated>1620811478690</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="midway through major rework of mechanics">
+      <created>1620887653724</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1620887653724</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -148,6 +152,19 @@
     <MESSAGE value="Playershot accidentally triggering chain explosions fixed. now trying to limit max size of monsters" />
     <MESSAGE value="Made balance changes&#10;Modified purple monster behavior = faster and limted max size" />
     <MESSAGE value="expanding chain boom sort of working" />
-    <option name="LAST_COMMIT_MESSAGE" value="expanding chain boom sort of working" />
+    <MESSAGE value="midway through major rework of mechanics" />
+    <option name="LAST_COMMIT_MESSAGE" value="midway through major rework of mechanics" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/js/main.js</url>
+          <line>777</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="10" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>
