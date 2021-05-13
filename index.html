@@ -6,58 +6,83 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Runaway Reaction</title>
-    <link rel="stylesheet" href="css/main.css"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">    <link rel="stylesheet" href="css/main.css"/>
 </head>
 <body>
 
 <div class="main-wrapper" id="main">
     <div class="grid-container-main" >
-        <div class="Header"><h1>RUNAWAY REACTION - MAIN SCREEN</h1></div>
+        <div class="Header"><h1>RUNAWAY REACTION</h1></div>
         <div class="Main-Panel">
             <div class="OptionsLeft">
-                <p>Play Runaway Reactions by clicking the button below</p>
-                <br>
-                <!-- Trigger/Open The Modal -->
-                <button id="myBtn">Start Game</button>
+
             </div>
             <div class="Graphic">
-<!--                <img alt="main image" src="resources/main%20placeholder%20image.png"/>-->
+                <h1>Play Runaway Reactions by clicking the button below</h1>
+                <!-- Trigger/Open The Modal -->
+                <br>
+                <button id="myBtn">Start Game</button>
+
+                <!--
+
+    <img alt="main image" src="resources/main%20placeholder%20image.png"/>-->
             </div>
             <div class="OptionsRight"></div>
         </div>
-        <div class="Footer">Footer</div>
+        <div class="Footer"></div>
     </div>
 </div>
 
 
 <div class="main-game-wrapper" id="game">
     <div class="grid-container-game">
-        <div class="Header"><h1>RUNAWAY REACTION - GAME SCREEN</h1></div>
+        <div class="Header"><h1>RUNAWAY REACTION</h1></div>
         <div class="Main-Panel">
             <div class="ScoringLeft">
                 <h1>Current Level</h1>
-                <p id="currentLevel"></p>
-                <br>
-                <h1>Total Score</h1>
-                <p id="totalScore"></p>
-                <br>
+                <p id="currentLevel">1</p>
                 <h1>Level Score</h1>
-                <p id="levelScore"></p>
-                <br>
+                <p id="levelScore">0</p>
+                <h1>Total Score</h1>
+                <p id="totalScore">0</p>
+
             </div>
             <div class="Game-Area"><canvas id="myCanvas" width="720" height="405"></canvas></div>
             <div class="ScoringRight">
+
                 <h1>Time Remaining</h1>
-                <p><span id="timeLeft"></span> seconds </p>
-                <br>
-                <h1>Chain Count</h1>
-                <p id="chainCount">0</p>
-                <br>
-                <h1>Percentage Infected</h1>
-                <p id="infectedPct">0</p>
+                <p id="timeLeft">0 seconds left</p>
+
+                <h4>Mask Mandate</h4>
+                <label class="switch">
+                    <input type="checkbox" id="maskBtn">
+                    <span class="slider"></span>
+                </label>
+
+                <h4>Circuit Breaker</h4>
+                <label class="switch">
+                    <input type="checkbox" id="circuitBreaker">
+                    <span class="slider"></span>
+                </label>
+
+                <h4>Close Borders</h4>
+                <label class="switch">
+                    <input type="checkbox" id="closeAirports">
+                    <span class="slider"></span>
+                </label>
+
+
+<!--                <h1>Chain Count</h1>-->
+<!--                <p id="chainCount">0</p>-->
             </div>
         </div>
-        <div class="Footer">Footer</div>
+        <div class="Footer">
+            <div id="infectedBar"></div>
+            <div id="cleanBar"></div>
+            <h4 id="infectedPct">0%</h4>
+        </div>
 
         <div id="preGame" class="modal">
             <div class="modal-content">

@@ -1,3 +1,12 @@
+* {
+  font-family: "Noto Sans KR", sans-serif;
+}
+
+h1, h4, p {
+  margin-top: 20px;
+  margin-bottom: 1px;
+}
+
 .grid-container-main {
   display: grid;
   width: 1280px;
@@ -11,6 +20,9 @@
   background-color: lightgray;
   height: auto;
   width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 .grid-container-main .Main-Panel {
   display: grid;
@@ -28,6 +40,10 @@
 }
 .grid-container-main .Graphic {
   grid-area: Graphic;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 .grid-container-main .Graphic .img {
   height: auto;
@@ -80,6 +96,10 @@
 .grid-container-game .Main-Panel .ScoringLeft {
   grid-area: ScoringLeft;
   background-color: lightgray;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
 }
 .grid-container-game .Main-Panel .Game-Area {
   grid-area: Game-Area;
@@ -94,11 +114,34 @@
 .grid-container-game .Main-Panel .ScoringRight {
   grid-area: ScoringRight;
   background-color: lightgray;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
 }
 .grid-container-game .Footer {
   grid-area: Footer;
   background-color: lightgray;
   height: auto;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+.grid-container-game .Footer #infectedBar {
+  background-color: #008A09;
+  width: 10px;
+  height: 70px;
+}
+.grid-container-game .Footer #cleanBar {
+  background-color: #35b5ff;
+  width: 710px;
+  height: 70px;
+}
+.grid-container-game .Footer #infectedPct {
+  position: absolute;
+  z-index: 10;
 }
 
 /* The Modal (background) */
@@ -140,6 +183,7 @@
   display: block;
   font-size: 28px;
   font-weight: bold;
+  text-align: center;
 }
 
 .close:hover,
@@ -155,6 +199,69 @@ h1, p {
 
 button {
   margin: 0px auto;
+}
+
+/* The switch - the box around the slider */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+
+/* Hide default HTML checkbox */
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* The slider */
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
+}
+
+input:checked + .slider {
+  background-color: #2196F3;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
 }
 
 /*# sourceMappingURL=main.css.map */

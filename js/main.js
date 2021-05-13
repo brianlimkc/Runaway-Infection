@@ -22,6 +22,7 @@ let redCount = 0;
 let orangeCount = 0;
 let importRate = 0;
 let spreadRate = 0;
+let isBallSlow = false;
 
 // ctx.font = "20px Georgia"; // font
 
@@ -35,7 +36,7 @@ let ballValues = [
         ballName: "blue",
         ballCol: '#35b5ff',
         ballRad: 10,
-        ballSpeed: 3,
+        ballSpeed: 1,
         counter: 12,
         boomUpEnd: 6,
         boomDownStart: 6,
@@ -131,17 +132,19 @@ let levelInitValues = [
         monsterGrow: 1,
         importRate: 200,
         spreadRate: 3,
-        levelDesc: "Click on the blue and red balls to shoot them. Red balls will be linked by a line when they are close. Shoot red balls when they are linked for a bigger explosion!"
+        levelDesc: "Covid-19 is spreading rapidly through the population!" +
+            "Click on the red balls when they are linked to set off" +
+            " big explosions which will help cure the disease!"
     },
     level2 = {
-        blue: 10,
+        blue: 20,
         red: 1,
         orange: 1,
         maxBlue: 60,
         maxRed: 10,
         maxOrange: 3,
         maxMonster: 0,
-        levelTime: 2000,
+        levelTime: 2500,
         blueSpawn: 30,
         redSpawn: 100,
         orangeSpawn: 30,
@@ -149,17 +152,18 @@ let levelInitValues = [
         monsterGrow: 0,
         importRate: 200,
         spreadRate: 3,
-        levelDesc: "Click on orange balls to change them into red balls, so you can form even bigger chains!"
+        levelDesc: "Click on orange balls to turn them into red balls. " +
+            "This will allow you to make huge chains to quickly cure more people!"
     },
     level3 = {
-        blue: 10,
+        blue: 20,
         red: 3,
         orange: 3,
-        maxBlue: 60,
+        maxBlue: 80,
         maxRed: 50,
         maxOrange: 3,
         maxMonster: 1,
-        levelTime: 1200,
+        levelTime: 2500,
         blueSpawn: 10,
         redSpawn: 100,
         orangeSpawn: 30,
@@ -167,43 +171,46 @@ let levelInitValues = [
         monsterGrow: 0.05,
         importRate: 100,
         spreadRate: 5,
-        levelDesc: "Purple Monsters have appeared! They will eat your balls and grow larger over time, so click on them to kill them!"
+        levelDesc: "The disease is mutating and is spreading faster and faster."  +
+            "More and more cases are also appearing at random. " +
+            "Perhaps it is time to implement some control measures?"
     },
     level4 = {
-        blue: 10,
-        red: 3,
-        orange: 3,
-        maxBlue: 80,
+        blue: 30,
+        red: 1,
+        orange: 1,
+        maxBlue: 100,
         maxRed: 5,
         maxOrange: 3,
         maxMonster: 3,
-        levelTime: 2000,
+        levelTime: 2500,
         blueSpawn: 30,
-        redSpawn: 100,
-        orangeSpawn: 30,
+        redSpawn: 200,
+        orangeSpawn: 50,
         monsterSpawn: 300,
         monsterGrow: 0.15,
-        importRate: 100,
+        importRate: 70,
         spreadRate: 7,
         levelDesc: "This hard level has more of everything. Think you can survive?"
     },
     level5 = {
         blue: 40,
-        red: 3,
-        orange: 3,
-        maxBlue: 80,
+        red: 1,
+        orange: 1,
+        maxBlue: 120,
         maxRed: 20,
         maxOrange: 3,
         maxMonster: 5,
-        levelTime: 2000,
+        levelTime: 3000,
         blueSpawn: 30,
-        redSpawn: 200,
+        redSpawn: 250,
         orangeSpawn: 50,
         monsterSpawn: 200,
         monsterGrow: 0.25,
-        importRate: 50,
+        importRate: 30,
         spreadRate: 9,
-        levelDesc: "This is the nightmare difficulty level, challenge it if you dare!"
+        levelDesc: "This is the nightmare difficulty level. " +
+            "Challenge it if you dare!"
     }
 ]
 
@@ -330,10 +337,22 @@ function ballDrawMove(ballArray) {
             let ballDY = ballObj.ballDY
             let ballRad = ballObj.ballRad
 
-            if ((ballDX*ballDX+ballDY*ballDY)>2)  {
+            if ((ballDX*ballDX+ballDY*ballDY)>8)  {
                 ballDX *= 0.6
                 ballDY *= 0.6
                 //console.log('slowdown' + ballDX + ' ' + ballDY)
+            }
+
+            if (isBallSlow) {
+
+                if ((ballDX * ballDX + ballDY * ballDY) > 0.25) {
+                    ballDX *= 0.6
+                    ballDY *= 0.6
+                    //console.log('slowdown' + ballDX + ' ' + ballDY)
+                }
+            } else {
+                ballDX *= 1.1
+                ballDY *= 1.1
             }
 
 
@@ -588,7 +607,7 @@ function collisionHandler(ballArray) {
                             chainObj.ballRad = chainObj.chainRad * (1 + (0.1 * chainCount))
                             levelScore+=chainObj.pointsValue*2 * (1 + (0.1 * chainCount))
                             ctx.fillText(chainCount, aX, aY);
-                            $chainCount.innerHTML = chainCount
+                            // $chainCount.innerHTML = chainCount
                             boomBallsArray.push(chainObj)
                         }
                     }
@@ -671,7 +690,11 @@ function replenishBalls(gameCounter) {
         if (obj.ballName==='monster') {monsterCount++}
     })
 
-    $infectedPct.innerHTML = `${((covidCount/(covidCount+blueCount))*100).toFixed(1)}% infected`
+    let infectedPct = ((covidCount/(covidCount+blueCount))*100).toFixed(1)
+
+    $infectedBar.style.width = `${infectedPct * 7.2}px`
+    $cleanBar.style.width =  `${(100-infectedPct) * 7.2}px`
+    $infectedPct.innerHTML = `${infectedPct}% infected`
 
     // console.log(`blue: ${blueCount} red: ${redCount} orange: ${orangeCount} monster: ${monsterCount}`)
 
@@ -868,26 +891,28 @@ function arrayHousekeeping() {
     // }
 }
 
-// Event listeners
-document.addEventListener("mousemove", mouseMoveHandler, false);
-document.addEventListener("mousedown", mouseClickHandler, false);
+function lawChecks() {
+    let maskChecked = $maskBtn.checked
+    let circuitBreakerChecked = $circuitBreaker.checked
+    let airportChecked = $closeAirports.checked
 
-function mouseMoveHandler(e) {
-    let relativeX = e.clientX - canvas.offsetLeft;
-    if(relativeX > 0 && relativeX < canvas.width) {
-        pCursor.pX = relativeX //- pCursor.pRad;
+    if (maskChecked) {
+        spreadRate = 1
+    } else {
+        spreadRate = levelInitValues[levelCount].spreadRate
     }
-    let relativeY = e.clientY - canvas.offsetTop;
-    if(relativeY > 0 && relativeY < canvas.width) {
-        pCursor.pY = relativeY //- pCursor.pRad;
-    }
-}
 
-function mouseClickHandler() {
-    mouseClick = true;
-    let playerShotObj = new BallConstructor(ballValues[4],pCursor.pX,pCursor.pY,0,0)
-    boomBallsArray.push(playerShotObj)
-}
+    if (airportChecked) {
+        importRate = (levelInitValues[levelCount].importRate * 20)
+    } else {
+        importRate = levelInitValues[levelCount].importRate
+    }
+
+    isBallSlow = circuitBreakerChecked;
+
+
+    }
+
 
 
 // main function
@@ -927,6 +952,8 @@ function draw() {
 
     arrayHousekeeping()
 
+    lawChecks()
+
     timeKeeper()
 
     updateScore()
@@ -940,7 +967,7 @@ function timeKeeper() {
     gameTime--
 
     if (gameTime%gameTick) {
-        $timeLeft.innerHTML = (gameTime/gameTick).toFixed(1)
+        $timeLeft.innerHTML = ` ${(gameTime/gameTick).toFixed(1)} seconds`
     }
 
     if (gameTime<=0) {
@@ -956,7 +983,7 @@ function timeKeeper() {
 
         } else {
             levelCount++
-            $levelReport.innerHTML = `You have scored ${levelScore} points. Well Done!`
+            $levelReport.innerHTML = `You have scored ${levelScore} points for this level, Well Done!`
             $levelDesc.innerHTML = levelInitValues[levelCount].levelDesc
             $postGame.style.display = "block"
 
@@ -989,6 +1016,10 @@ function mainGame(){
     importRate = levelInitValues[levelCount].importRate
     spreadRate = levelInitValues[levelCount].spreadRate
 
+    $maskBtn.checked = false;
+    $circuitBreaker.checked = false;
+    $closeAirports.checked = false;
+
     gameRun = setInterval(draw, gameInterval);
 }
 
@@ -1002,8 +1033,36 @@ let $levelScore = document.getElementById("levelScore")
 let $levelReport = document.getElementById("levelReport")
 let $finalReport = document.getElementById("finalReport")
 let $timeLeft = document.getElementById("timeLeft")
-let $chainCount = document.getElementById("chainCount")
+// let $chainCount = document.getElementById("chainCount")
 let $infectedPct = document.getElementById("infectedPct")
+let $infectedBar = document.getElementById("infectedBar")
+let $cleanBar = document.getElementById("cleanBar")
+let $maskBtn = document.getElementById("maskBtn")
+let $circuitBreaker = document.getElementById("circuitBreaker")
+let $closeAirports = document.getElementById("closeAirports")
+
+
+// Event listeners
+document.addEventListener("mousemove", mouseMoveHandler, false);
+document.addEventListener("mousedown", mouseClickHandler, false);
+
+function mouseMoveHandler(e) {
+    let relativeX = e.clientX - canvas.offsetLeft;
+    if(relativeX > 0 && relativeX < canvas.width) {
+        pCursor.pX = relativeX //- pCursor.pRad;
+    }
+    let relativeY = e.clientY - canvas.offsetTop;
+    if(relativeY > 0 && relativeY < canvas.width) {
+        pCursor.pY = relativeY //- pCursor.pRad;
+    }
+}
+
+function mouseClickHandler() {
+    mouseClick = true;
+    let playerShotObj = new BallConstructor(ballValues[4],pCursor.pX,pCursor.pY,0,0)
+    boomBallsArray.push(playerShotObj)
+}
+
 
 // Get the modal
 let $preGame = document.getElementById("preGame");
