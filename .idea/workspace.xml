@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="696a24b5-8f7f-400d-8976-b3f9eca0f8e7" name="Default Changelist" comment="">
+    <list default="true" id="696a24b5-8f7f-400d-8976-b3f9eca0f8e7" name="Default Changelist" comment="Ball bounce is working properly. chain reactions still wonky.">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/css/main.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/main.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/css/main.css.map" beforeDir="false" afterPath="$PROJECT_DIR$/css/main.css.map" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/js/main.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/main.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scss/main.scss" beforeDir="false" afterPath="$PROJECT_DIR$/scss/main.scss" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -29,6 +34,14 @@
       <filtered-out-file-type name="TAG" />
       <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
     </file-type-list>
+  </component>
+  <component name="GithubPullRequestsUISettings">
+    <option name="selectedUrlAndAccountId">
+      <UrlAndAccount>
+        <option name="accountId" value="893d9a99-3deb-4aea-84c9-835e715f30ff" />
+        <option name="url" value="https://git.generalassemb.ly/brianlimkc/Runaway-Reaction.git" />
+      </UrlAndAccount>
+    </option>
   </component>
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$PROJECT_DIR$/js/main.js" root0="FORCE_HIGHLIGHTING" />
@@ -71,7 +84,61 @@
       <workItem from="1620548321310" duration="7433000" />
       <workItem from="1620610385127" duration="5888000" />
       <workItem from="1620618060419" duration="45992000" />
+      <workItem from="1620783643935" duration="98000" />
+      <workItem from="1620783745052" duration="20034000" />
+      <workItem from="1620868028364" duration="638000" />
+      <workItem from="1620870510687" duration="36996000" />
     </task>
+    <task id="LOCAL-00001" summary="Test commit using webstorm">
+      <created>1620789426018</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1620789426018</updated>
+    </task>
+    <task id="LOCAL-00002" summary="chain explosions are triggering properly but playershots are triggering chain explosions from out of range">
+      <created>1620792523146</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1620792523146</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Playershot accidentally triggering chain explosions fixed. now trying to limit max size of monsters">
+      <created>1620795552287</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1620795552287</updated>
+    </task>
+    <task id="LOCAL-00004" summary="Made balance changes&#10;Modified purple monster behavior = faster and limted max size">
+      <created>1620808569336</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1620808569336</updated>
+    </task>
+    <task id="LOCAL-00005" summary="expanding chain boom sort of working">
+      <created>1620811478690</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1620811478690</updated>
+    </task>
+    <task id="LOCAL-00006" summary="midway through major rework of mechanics">
+      <created>1620887653724</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1620887653724</updated>
+    </task>
+    <task id="LOCAL-00007" summary="Ball bounce is working properly. chain reactions still wonky.">
+      <created>1620917462732</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1620917462732</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -88,5 +155,27 @@
       </map>
     </option>
     <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Test commit using webstorm" />
+    <MESSAGE value="chain explosions are triggering properly but playershots are triggering chain explosions from out of range" />
+    <MESSAGE value="Playershot accidentally triggering chain explosions fixed. now trying to limit max size of monsters" />
+    <MESSAGE value="Made balance changes&#10;Modified purple monster behavior = faster and limted max size" />
+    <MESSAGE value="expanding chain boom sort of working" />
+    <MESSAGE value="midway through major rework of mechanics" />
+    <MESSAGE value="Ball bounce is working properly. chain reactions still wonky." />
+    <option name="LAST_COMMIT_MESSAGE" value="Ball bounce is working properly. chain reactions still wonky." />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/js/main.js</url>
+          <line>800</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="10" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>
