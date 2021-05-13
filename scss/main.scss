@@ -1,8 +1,8 @@
 .grid-container-main {
   display: grid;
-  width: 1440px;
+  width: 1280px;
   grid-template-columns: 1fr;
-  grid-template-rows: 150px 720px 100px;
+  grid-template-rows: 150px 405px 100px;
   gap: 0px 0px;
   grid-template-areas:
     "Header"
@@ -18,7 +18,7 @@
   }
   .Main-Panel {
     display: grid;
-    grid-template-columns: 360px 720px 360px;
+    grid-template-columns: 280px 720px 280px;
     grid-template-rows: 1fr;
     gap: 0px 0px;
     grid-template-areas:
@@ -63,9 +63,9 @@
 
 .grid-container-game {
   display: grid;
-  width: 1440px;
+  width: 1280px;
   grid-template-columns: 1fr;
-  grid-template-rows: 150px 720px 100px;
+  grid-template-rows: 150px 405px 100px;
   gap: 0px 0px;
   grid-template-areas:
     "Header"
@@ -81,7 +81,7 @@
 
   .Main-Panel {
     display: grid;
-    grid-template-columns: 360px 720px 360px;
+    grid-template-columns: 280px 720px 280px;
     grid-template-rows: 1fr;
     gap: 0px 0px;
     grid-template-areas:
@@ -157,3 +157,10 @@
   cursor: pointer;
 }
 
+h1, p {
+  text-align: center;
+}
+
+button {
+  margin: 0px auto
+}

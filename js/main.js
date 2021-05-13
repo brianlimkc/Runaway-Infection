@@ -1,7 +1,7 @@
 let canvas = document.getElementById("myCanvas");
 let ctx = canvas.getContext("2d");
 let gameTime = 0
-let gameInterval = 50
+let gameInterval = 16.67
 let gameTick = Math.round(1000/gameInterval)
 let pCursor = {
     pX : canvas.width/2,
@@ -53,11 +53,11 @@ let ballValues = [
         counter: 30, // 50
         boomUpEnd: 15, //25
         boomDownStart: 15, //25
-        boomUpSize: 0.5,
-        boomDownSize: 0.5,
+        boomUpSize: 0.1,
+        boomDownSize: 0.1,
         chainMult: false,
         pointsValue: 500,
-        chainRad: 100,  // to change back to 100
+        chainRad: 60,  // to change back to 100
         boomed: false,
         faded: false
     },
@@ -69,11 +69,11 @@ let ballValues = [
         counter: 30,
         boomUpEnd: 15,
         boomDownStart: 15,
-        boomUpSize: 0.5,
-        boomDownSize: 0.5,
+        boomUpSize: 0.1,
+        boomDownSize: 0.1,
         chainMult: false,
         pointsValue: 200,
-        chainRad: 100,
+        chainRad: 60,
         boomed: false,
         faded: false
     },
@@ -114,11 +114,11 @@ let levelCount = 0
 
 let levelInitValues = [
     level1 = {
-        blue: 10,
-        red: 1,
+        blue: 10, // 10
+        red: 1, // 1
         orange: 0,
-        maxBlue: 20,
-        maxRed: 15,
+        maxBlue: 100, //20
+        maxRed: 7, //15
         maxOrange: 0,
         maxMonster: 0, // 0
         levelTime: 10000,  // 1200
@@ -203,17 +203,70 @@ function fillBallArray(ballCountObj){
 
     for (let i = 0; i < blueCount; i++) {
         let newBall = ballGenerator(ballValues[0])
+        if (i===0) {
+            ballArray.push(newBall)
+        } else {
+            ballArray.forEach(function(obj){
+                newBall = ballGenerator(ballValues[0])
+
+                let aX = obj.ballX
+                let aY = obj.ballY
+                let aRad = obj.ballRad
+                let bX = newBall.ballX
+                let bY = newBall.ballY
+                let bRad = newBall.ballRad
+
+                while (collideCheck(aX,aY,aRad,bX,bY,bRad)) {
+                    newBall = ballGenerator(ballValues[0])
+                    bX = newBall.ballX
+                    bY = newBall.ballY
+                    bRad = newBall.ballRad
+                }
+            })
+        }
         ballArray.push(newBall)
     }
     for (let i = 0; i < redCount; i++) {
         let newBall = ballGenerator(ballValues[1])
+        ballArray.forEach(function(obj){
+
+            let aX = obj.ballX
+            let aY = obj.ballY
+            let aRad = obj.ballRad
+            let bX = newBall.ballX
+            let bY = newBall.ballY
+            let bRad = newBall.ballRad
+
+            while (collideCheck(aX,aY,aRad,bX,bY,bRad)) {
+                newBall = ballGenerator(ballValues[1])
+                bX = newBall.ballX
+                bY = newBall.ballY
+                bRad = newBall.ballRad
+            }
+        })
         ballArray.push(newBall)
     }
     for (let i = 0; i < orangeCount; i++) {
         let newBall = ballGenerator(ballValues[2])
+
+        ballArray.forEach(function(obj){
+
+            let aX = obj.ballX
+            let aY = obj.ballY
+            let aRad = obj.ballRad
+            let bX = newBall.ballX
+            let bY = newBall.ballY
+            let bRad = newBall.ballRad
+
+            while (collideCheck(aX,aY,aRad,bX,bY,bRad)) {
+                newBall = ballGenerator(ballValues[2])
+                bX = newBall.ballX
+                bY = newBall.ballY
+                bRad = newBall.ballRad
+            }
+        })
         ballArray.push(newBall)
     }
-
     return ballArray
 }
 
@@ -250,6 +303,7 @@ function BallConstructor(ballValueObj, x, y, dx, dy) {
 
     this.boomed = false
     this.faded = false
+    this.isBounced = false
 }
 
 function ballDrawMove(ballArray) {
@@ -308,7 +362,125 @@ function collideCheck(aX,aY,aRad,bX,bY,bRad){
     let sumRad = aRad + bRad
     let xDist = Math.abs(aX - bX)
     let yDist = Math.abs(aY - bY)
+
     return ((xDist*xDist+yDist*yDist)<=(sumRad*sumRad))
+}
+
+function randomInfection(bounceBallArray) {
+    let infectSelection = Math.floor(Math.random()*bounceBallArray.length)
+    infectBall(bounceBallArray[infectSelection])
+}
+
+function infectBall(ballObj) {
+    ballObj.ballName = 'covid'
+    ballObj.ballCol = '#008A09'
+}
+
+function bounceResolver(ballArray) {
+
+    let bounceBallArray = []
+
+    ballArray.forEach(function (obj1){
+        if (obj1.ballName !== "monster") {
+            obj1.isBounced = false
+            bounceBallArray.push(obj1)
+        }
+    })
+
+    if (gameCounter%200===0) {
+        randomInfection(bounceBallArray)
+    }
+
+    bounceBallArray.forEach(function (obj1){
+        if (!obj1.isBounced) {
+            let aX = obj1.ballX
+            let aY = obj1.ballY
+            let aDX = obj1.ballDX
+            let aDY = obj1.ballDY
+            let aRad = obj1.ballRad
+            bounceBallArray.forEach(function (obj2) {
+                if (!obj2.isBounced) {
+                    let bX = obj2.ballX
+                    let bY = obj2.ballY
+
+                    if (!((aX === bX) && (aY === bY))) {
+                        let bDX = obj2.ballDX
+                        let bDY = obj2.ballDY
+                        let bRad = obj2.ballRad
+
+                        // console.log(collideCheck(aX,aY,aRad,bX,bY,bRad))
+
+                        let sumRad = aRad + bRad
+                        let xDist = Math.abs(aX - bX)
+                        let yDist = Math.abs(aY - bY)
+
+                        if ((xDist*xDist+yDist*yDist)-(sumRad*sumRad)<0) {
+                            let collAngle = Math.atan(yDist/xDist)
+                            let yShift = ((Math.sin(collAngle) * (sumRad + 3)) - yDist) * 0.5
+                            let xShift = ((Math.cos(collAngle) * (sumRad + 3)) - xDist) * 0.5
+
+                            // console.log(`xshift: ${xShift} yshift: ${yShift}`)
+
+                            if (aX <= bX) {
+                                aX-=xShift
+                                bX+=xShift
+                            } else {
+                                aX+=xShift
+                                bX-=xShift
+                            }
+
+                            if (aY <= bY) {
+                                aY-=yShift
+                                bY+=yShift
+                            } else {
+                                aY+=yShift
+                                bY-=yShift
+                            }
+
+                            // console.log(collideCheck(aX,aY,aRad,bX,bY,bRad))
+
+                            let x = aX - bX
+                            let y = aY - bY
+                            let d = x * x + y * y
+
+                            let u1 = (aDX * x + aDY * y) / d
+                            let u2 = (x * aDY - y * aDX) / d
+                            let u3 = (bDX * x + bDY * y) / d
+                            let u4 = (x * bDY - y * bDX) / d
+
+                            obj2.ballDX = x * u1 - y * u4
+                            obj2.ballDY = y * u1 + x * u4
+                            obj1.ballDX = x * u3 - y * u2
+                            obj1.ballDY = y * u3 + x * u2
+
+                            obj1.isBounced = true
+                            obj2.isBounced = true
+
+
+                            let isBall1Infected = (obj1.ballName === 'covid')
+                            let isBall2Infected = (obj2.ballName === 'covid')
+                            let isBall1Red = (obj1.ballName === 'red')
+                            let isBall2Red = (obj2.ballName === 'red')
+
+
+                            if (isBall1Infected && !isBall2Infected && !isBall1Red) {
+                                if ((Math.floor(Math.random() * 10)) <= 4) {
+                                    infectBall(obj2)
+                                    console.log('infection 1 to 2')
+                                }
+                            } else if (!isBall1Infected && isBall2Infected && !isBall2Red) {
+                                if ((Math.floor(Math.random() * 10)) <= 4) {
+                                    infectBall(obj1)
+                                    console.log('infection 2 to 1')
+                                }
+                            }
+                        }
+                    }
+                }
+            })
+        }
+    })
+
 }
 
 function drawLine(ballArrayTemp) {
@@ -359,17 +531,11 @@ function collisionHandler(ballArray) {
 
     if (mouseClick) {
         boomBallsArray.forEach(function (boomObj) {
-            let blueFlag = false
-            if (boomObj.ballName === 'blue') {
-                blueFlag = true
-            }
+            let isBlue = (boomObj.ballName === 'blue')
+            let isCovid = (boomObj.ballName === 'covid')
+            let isPlayerShot = (boomObj.ballName === "playerShot")
 
-            let playerShot = false
-            if (boomObj.ballName === "playerShot") {
-                playerShot = true
-            }
-
-            if (!boomObj.faded && !blueFlag) {
+            if (!boomObj.faded && (!isBlue || !isCovid)) {
                 let boomX = boomObj.ballX
                 let boomY = boomObj.ballY
                 let boomRad = boomObj.ballRad
@@ -379,7 +545,7 @@ function collisionHandler(ballArray) {
                         let aX = chainObj.ballX
                         let aY = chainObj.ballY
                         let aRad = chainObj.chainRad
-                        if (playerShot) {
+                        if (isPlayerShot) {
                             aRad = chainObj.ballRad
 
                         }
@@ -404,24 +570,18 @@ function collisionHandler(ballArray) {
                         let aX = ballObj.ballX
                         let aY = ballObj.ballY
                         let aRad = ballObj.ballRad
-                        let orangeFlag = false
-                        let monsterFlag = false
-                        if (ballObj.ballName === 'orange') {
-                            orangeFlag = true
-                        }
-                        if (ballObj.ballName === 'monster') {
-                            monsterFlag = true
-                        }
+                        let isOrange = (ballObj.ballName === 'orange')
+                        let isMonster = (ballObj.ballName === 'monster')
 
                         if (ballObj.chainMult && !playerShot) {
                             aRad = ballObj.chainRad
                         }
 
-                        if (playerShot && orangeFlag && (collideCheck(aX, aY, aRad, boomX, boomY, boomRad))) {
+                        if (isPlayerShot && isOrange && (collideCheck(aX, aY, aRad, boomX, boomY, boomRad))) {
                             ballObj.ballName = "red"
                             ballObj.ballCol = '#ff479c'
                             ballObj.pointsValue = 500
-                        } else if (playerShot && monsterFlag && (collideCheck(aX, aY, aRad, boomX, boomY, boomRad))) {
+                        } else if (isPlayerShot && isMonster && (collideCheck(aX, aY, aRad, boomX, boomY, boomRad))) {
                             if (ballObj.ballRad <= 10) {
                                 ballObj.boomed = true
                                 boomBallsArray.push(ballObj)
@@ -473,17 +633,29 @@ function replenishBalls(gameCounter) {
         if (obj.ballName==='blue') {blueCount++}
         if (obj.ballName==='red') {redCount++}
         if (obj.ballName==='orange') {orangeCount++}
-        if (obj.ballName==='monster') {
-            monsterCount++
-            // if (obj.ballRad <= 200) {
-            //     obj.ballRad += levelInitValues[levelCount].monsterGrow
-            // }
-        }
+        if (obj.ballName==='monster') {monsterCount++}
     })
+
+    // console.log(`blue: ${blueCount} red: ${redCount} orange: ${orangeCount} monster: ${monsterCount}`)
 
     if (gameCounter%redSpawn===0) {
         if (redCount < maxRed) {
             let newBall = ballGenerator(ballValues[1])
+            ballArray.forEach(function(obj){
+                let aX = obj.ballX
+                let aY = obj.ballY
+                let aRad = obj.ballRad
+                let bX = newBall.ballX
+                let bY = newBall.ballY
+                let bRad = newBall.ballRad
+
+                while (collideCheck(aX,aY,aRad,bX,bY,bRad)) {
+                    newBall = ballGenerator(ballValues[1])
+                    bX = newBall.ballX
+                    bY = newBall.ballY
+                    bRad = newBall.ballRad
+                }
+            })
             ballArray.push(newBall)
         }
     }
@@ -491,6 +663,22 @@ function replenishBalls(gameCounter) {
     if (gameCounter%orangeSpawn===0) {
         if (orangeCount < maxOrange) {
             let newBall = ballGenerator(ballValues[2])
+            ballArray.forEach(function(obj){
+
+                let aX = obj.ballX
+                let aY = obj.ballY
+                let aRad = obj.ballRad
+                let bX = newBall.ballX
+                let bY = newBall.ballY
+                let bRad = newBall.ballRad
+
+                while (collideCheck(aX,aY,aRad,bX,bY,bRad)) {
+                    newBall = ballGenerator(ballValues[2])
+                    bX = newBall.ballX
+                    bY = newBall.ballY
+                    bRad = newBall.ballRad
+                }
+            })
             ballArray.push(newBall)
         }
     }
@@ -498,17 +686,48 @@ function replenishBalls(gameCounter) {
     if (gameCounter%blueSpawn===0) {
         if (blueCount < maxBlue) {
             let newBall = ballGenerator(ballValues[0])
+            ballArray.forEach(function(obj){
+                let aX = obj.ballX
+                let aY = obj.ballY
+                let aRad = obj.ballRad
+                let bX = newBall.ballX
+                let bY = newBall.ballY
+                let bRad = newBall.ballRad
+
+                while (collideCheck(aX,aY,aRad,bX,bY,bRad)) {
+                    newBall = ballGenerator(ballValues[0])
+                    bX = newBall.ballX
+                    bY = newBall.ballY
+                    bRad = newBall.ballRad
+                }
+            })
             ballArray.push(newBall)
         }
     }
 
     if (gameCounter%monsterSpawn===0) {
         if (monsterCount < maxMonster) {
-            let newBall = ballGenerator(ballValues[3])
-            if (levelCount===5) {
-                newball.ballDX *= 1.2
-                newball.ballDY *= 1.2
-            }
+            let newBall = ballGenerator(ballValues[0])
+            ballArray.forEach(function(obj){
+                let aX = obj.ballX
+                let aY = obj.ballY
+                let aRad = obj.ballRad
+                let bX = newBall.ballX
+                let bY = newBall.ballY
+                let bRad = newBall.ballRad
+
+                while (collideCheck(aX,aY,aRad,bX,bY,bRad)) {
+                    newBall = ballGenerator(ballValues[0])
+                    bX = newBall.ballX
+                    bY = newBall.ballY
+                    bRad = newBall.ballRad
+                }
+
+                if (levelCount===5) {
+                    newball.ballDX *= 1.2
+                    newball.ballDY *= 1.2
+                }
+            })
             ballArray.push(newBall)
         }
     }
@@ -637,6 +856,10 @@ function draw() {
     replenishBalls(gameCounter)
 
     drawLine(ballArray)
+
+    // bounce check for all balls
+
+    bounceResolver(ballArray)
 
     // draw balls and move balls
 
