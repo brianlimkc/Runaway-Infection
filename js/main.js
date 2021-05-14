@@ -23,9 +23,7 @@ let orangeCount = 0;
 let importRate = 0;
 let spreadRate = 0;
 let isBallSlow = false;
-
-// ctx.font = "20px Georgia"; // font
-
+let levelCount = 0
 let chainCount = 0; // chain counter
 
 let boomBallsArray = []
@@ -113,8 +111,6 @@ let ballValues = [
     }
 ]
 
-let levelCount = 0
-
 let levelInitValues = [
     level1 = {
         blue: 10, // 10
@@ -132,7 +128,7 @@ let levelInitValues = [
         monsterGrow: 1,
         importRate: 200,
         spreadRate: 3,
-        levelDesc: "Covid-19 is spreading rapidly through the population!" +
+        levelDesc: "Covid-19 is spreading rapidly through the population! " +
             "Click on the red balls when they are linked to set off" +
             " big explosions which will help cure the disease!"
     },
@@ -406,7 +402,9 @@ function collideCheck(aX,aY,aRad,bX,bY,bRad){
 
 function randomInfection(bounceBallArray) {
     let infectSelection = Math.floor(Math.random()*bounceBallArray.length)
-    infectBall(bounceBallArray[infectSelection])
+    let infectCandidate = bounceBallArray[infectSelection]
+    let isBlue = infectCandidate.ballName === 'blue'
+    if (isBlue) {infectBall(infectCandidate)}
 }
 
 function infectBall(ballObj) {
@@ -966,7 +964,11 @@ function draw() {
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+    // to fill up balls up to the level limits
+
     replenishBalls(gameCounter)
+
+    // draw lines between red balls and add to chainBoomArray
 
     drawLine(ballArray)
 
@@ -988,7 +990,7 @@ function draw() {
 
     // monster makan
 
-    monsterMakan(ballArray)
+    // monsterMakan(ballArray)
 
     // adjust boomball size and draw boomballs
 
@@ -1032,14 +1034,12 @@ function mainGame(){
 let $mainScreen = document.getElementById("main");
 let $gameScreen = document.getElementById("game");
 let $levelDesc = document.getElementById("levelDesc")
-
 let $currentLevel = document.getElementById("currentLevel")
 let $totalScore = document.getElementById("totalScore")
 let $levelScore = document.getElementById("levelScore")
 let $levelReport = document.getElementById("levelReport")
 let $finalReport = document.getElementById("finalReport")
 let $timeLeft = document.getElementById("timeLeft")
-// let $chainCount = document.getElementById("chainCount")
 let $infectedPct = document.getElementById("infectedPct")
 let $infectedBar = document.getElementById("infectedBar")
 let $cleanBar = document.getElementById("cleanBar")
@@ -1069,16 +1069,13 @@ function mouseClickHandler() {
     boomBallsArray.push(playerShotObj)
 }
 
-
 // Get the modal
 let $preGame = document.getElementById("preGame");
 let $postGame = document.getElementById("postGame");
 let $endGame = document.getElementById("endGame");
 
-
 // Get the button that opens the modal
 let $btn = document.getElementById("myBtn");
-
 
 // Get the <span> element that closes the modal
 let $closeBtn = document.getElementById("closeBtn");
