@@ -410,16 +410,19 @@ function randomInfection(bounceBallArray) {
 }
 
 function infectBall(ballObj) {
+    infectSound()
     ballObj.ballName = 'covid'
     ballObj.ballCol = '#008A09'
-}
+    }
 
 function cureBall(ballObj) {
+    cureSound()
     ballObj.ballName = 'blue'
     ballObj.ballCol = '#35b5ff'
 }
 
 function turnRed(ballObj) {
+    orangeSound()
     ballObj.ballName = "red"
     ballObj.ballCol = '#ff479c'
     ballObj.pointsValue = 500
@@ -609,6 +612,7 @@ function collisionHandler(ballArray) {
                             ctx.fillText(chainCount, aX, aY);
                             // $chainCount.innerHTML = chainCount
                             boomBallsArray.push(chainObj)
+                            boomSound()
                         }
                     }
 
@@ -635,11 +639,12 @@ function collisionHandler(ballArray) {
                             if (ballObj.ballRad <= 10) {
                                 ballObj.boomed = true
                                 boomBallsArray.push(ballObj)
+                                boomSound()
                             } else {
                                 ballObj.ballRad -= 10
                             }
                         } else if (isCovid && (collideCheck(aX, aY, aRad, boomX, boomY, boomRad)))  {
-                            cureBall(ballObj)
+                              cureBall(ballObj)
                         } else if (!isBlue && collideCheck(aX, aY, aRad, boomX, boomY, boomRad)) {
                             ballObj.boomed = true
                             levelScore+=ballObj.pointsValue
@@ -649,6 +654,7 @@ function collisionHandler(ballArray) {
                             }
 
                             boomBallsArray.push(ballObj)
+                            boomSound()
                         }
                     }
 
@@ -913,7 +919,47 @@ function lawChecks() {
 
     }
 
+function timeKeeper() {
 
+    gameTime--
+
+    if (gameTime%gameTick) {
+        $timeLeft.innerHTML = ` ${(gameTime/gameTick).toFixed(1)} seconds`
+    }
+
+    if (gameTime<=0) {
+        clearInterval(gameRun)
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        gameScore+=levelScore
+        $totalScore.innerHTML = gameScore
+        $musicMain.pause()
+        $cheerSound.play()
+
+        if (levelCount===4) {
+            $finalReport.innerHTML = `Your level score is ${levelScore} and your total score is ${gameScore}!!`
+            $endGame.style.display = "block"
+            levelCount=0
+
+        } else {
+            levelCount++
+            $levelReport.innerHTML = `You have scored ${levelScore} points for this level, Well Done!`
+            $levelDesc.innerHTML = levelInitValues[levelCount].levelDesc
+            $postGame.style.display = "block"
+
+        }
+    }
+
+    if (gameCounter > 1200) {
+        gameCounter = 1
+    }
+
+    gameCounter++
+}
+
+function updateScore(){
+
+    $levelScore.innerHTML = levelScore
+}
 
 // main function
 function draw() {
@@ -961,46 +1007,6 @@ function draw() {
 } // end of draw function
 
 let gameRun
-
-function timeKeeper() {
-
-    gameTime--
-
-    if (gameTime%gameTick) {
-        $timeLeft.innerHTML = ` ${(gameTime/gameTick).toFixed(1)} seconds`
-    }
-
-    if (gameTime<=0) {
-        clearInterval(gameRun)
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        gameScore+=levelScore
-        $totalScore.innerHTML = gameScore
-
-        if (levelCount===4) {
-            $finalReport.innerHTML = `Your level score is ${levelScore} and your total score is ${gameScore}!!`
-            $endGame.style.display = "block"
-            levelCount=0
-
-        } else {
-            levelCount++
-            $levelReport.innerHTML = `You have scored ${levelScore} points for this level, Well Done!`
-            $levelDesc.innerHTML = levelInitValues[levelCount].levelDesc
-            $postGame.style.display = "block"
-
-        }
-    }
-
-    if (gameCounter > 1200) {
-        gameCounter = 1
-    }
-
-    gameCounter++
-}
-
-function updateScore(){
-
-    $levelScore.innerHTML = levelScore
-}
 
 function mainGame(){
     $currentLevel.innerHTML = levelCount+1
@@ -1085,11 +1091,14 @@ $btn.onclick = function() {
     $gameScreen.style.display = "flex";
     $preGame.style.display = "block";
     $levelDesc.innerHTML = levelInitValues[levelCount].levelDesc
+    buttonSound()
 }
 
 // When the user clicks on <span> (x), close the modal
 $closeBtn.onclick = function() {
     $preGame.style.display = "none"
+    buttonSound()
+    if (levelCount !== 1) {$musicMain.play()}
     mainGame()
 }
 
@@ -1097,6 +1106,8 @@ $closeBtn.onclick = function() {
 $nextBtn.onclick = function() {
     $preGame.style.display = "block";
     $postGame.style.display = "none"
+    buttonSound()
+    $musicMain.play()
 }
 
 $endBtn.onclick = function() {
@@ -1106,8 +1117,48 @@ $endBtn.onclick = function() {
     levelScore = 0
     gameScore = 0
     $totalScore.innerHTML = gameScore
+    buttonSound()
 }
 
+// Audio
 
+let $musicMain = new Audio('resources/musicMain.mp3')
+let $boomSound = new Audio('resources/explosion04.wav')
+let $orangeBeep = new Audio('resources/orangeBeep.mp3')
+let $buttonBeep = new Audio('resources/buttonClick.mp3')
+let $cureBeep = new Audio('resources/cureBeep.mp3')
+let $infectSound = new Audio('resources/infectSound.mp3')
+let $cheerSound = new Audio('resources/cheerSound.mp3')
 
+$musicMain.autoplay = true
+
+function boomSound() {
+    const origAudio = $boomSound
+    const $boomEcho = origAudio.cloneNode()
+    $boomEcho.play()
+}
+
+function orangeSound() {
+    const origAudio = $orangeBeep
+    const $orangeEcho = origAudio.cloneNode()
+    $orangeEcho.play()
+}
+
+function buttonSound() {
+    const origAudio = $buttonBeep
+    const $buttonEcho = origAudio.cloneNode()
+    $buttonEcho.play()
+}
+
+function cureSound() {
+    const origAudio = $cureBeep
+    const $cureEcho = origAudio.cloneNode()
+    $cureEcho.play()
+}
+
+function infectSound() {
+    const origAudio = $infectSound
+    const $infectEcho = origAudio.cloneNode()
+    $infectEcho.play()
+}
 
