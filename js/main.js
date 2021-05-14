@@ -919,7 +919,47 @@ function lawChecks() {
 
     }
 
+function timeKeeper() {
 
+    gameTime--
+
+    if (gameTime%gameTick) {
+        $timeLeft.innerHTML = ` ${(gameTime/gameTick).toFixed(1)} seconds`
+    }
+
+    if (gameTime<=0) {
+        clearInterval(gameRun)
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        gameScore+=levelScore
+        $totalScore.innerHTML = gameScore
+        $musicMain.pause()
+        $cheerSound.play()
+
+        if (levelCount===4) {
+            $finalReport.innerHTML = `Your level score is ${levelScore} and your total score is ${gameScore}!!`
+            $endGame.style.display = "block"
+            levelCount=0
+
+        } else {
+            levelCount++
+            $levelReport.innerHTML = `You have scored ${levelScore} points for this level, Well Done!`
+            $levelDesc.innerHTML = levelInitValues[levelCount].levelDesc
+            $postGame.style.display = "block"
+
+        }
+    }
+
+    if (gameCounter > 1200) {
+        gameCounter = 1
+    }
+
+    gameCounter++
+}
+
+function updateScore(){
+
+    $levelScore.innerHTML = levelScore
+}
 
 // main function
 function draw() {
@@ -967,48 +1007,6 @@ function draw() {
 } // end of draw function
 
 let gameRun
-
-function timeKeeper() {
-
-    gameTime--
-
-    if (gameTime%gameTick) {
-        $timeLeft.innerHTML = ` ${(gameTime/gameTick).toFixed(1)} seconds`
-    }
-
-    if (gameTime<=0) {
-        clearInterval(gameRun)
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        gameScore+=levelScore
-        $totalScore.innerHTML = gameScore
-        $musicMain.pause()
-        $cheerSound.play()
-
-        if (levelCount===4) {
-            $finalReport.innerHTML = `Your level score is ${levelScore} and your total score is ${gameScore}!!`
-            $endGame.style.display = "block"
-            levelCount=0
-
-        } else {
-            levelCount++
-            $levelReport.innerHTML = `You have scored ${levelScore} points for this level, Well Done!`
-            $levelDesc.innerHTML = levelInitValues[levelCount].levelDesc
-            $postGame.style.display = "block"
-
-        }
-    }
-
-    if (gameCounter > 1200) {
-        gameCounter = 1
-    }
-
-    gameCounter++
-}
-
-function updateScore(){
-
-    $levelScore.innerHTML = levelScore
-}
 
 function mainGame(){
     $currentLevel.innerHTML = levelCount+1
@@ -1121,8 +1119,6 @@ $endBtn.onclick = function() {
     $totalScore.innerHTML = gameScore
     buttonSound()
 }
-
-
 
 // Audio
 

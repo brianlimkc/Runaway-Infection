@@ -1,5 +1,6 @@
 * {
   font-family: 'Noto Sans KR', sans-serif;
+  color: white;
 }
 
 h1, h4, p {
@@ -11,7 +12,7 @@ h1, h4, p {
   display: grid;
   width: 1280px;
   grid-template-columns: 1fr;
-  grid-template-rows: 150px 405px 100px;
+  grid-template-rows: 100px 480px 100px;
   gap: 0px 0px;
   grid-template-areas:
     "Header"
@@ -26,6 +27,7 @@ h1, h4, p {
     display: flex;
     justify-content: center;
     align-items: center;
+    background-image: linear-gradient(rgba(0, 0, 0, 0.8),rgba(0, 0, 0, 0.8)) , url("../resources/headerImg.jpg");
   }
 
   .Main-Panel {
@@ -42,6 +44,7 @@ h1, h4, p {
   .OptionsLeft {
     grid-area: OptionsLeft;
     background-color: lightgray;
+    background-image: linear-gradient(rgba(0, 0, 0, 0.8),rgba(0, 0, 0, 0.8)) ,  url("../resources/leftScoreImg.jpg");
   }
   .Graphic {
     grid-area: Graphic;
@@ -49,21 +52,28 @@ h1, h4, p {
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    background-image: linear-gradient(rgba(0, 0, 0, 0.8),rgba(0, 0, 0, 0.8)) ,  url("../resources/centerImg.jpg");
 
     .img {
       height: auto;
       width: auto;
     }
 
+    #myBtn {
+      color: black;
+    }
+
   }
   .OptionsRight {
     grid-area: OptionsRight;
     background-color: lightgray;
+    background-image: linear-gradient(rgba(0, 0, 0, 0.8),rgba(0, 0, 0, 0.8)) ,  url("../resources/rightScoreImg.jpg");
   }
   .Footer {
     grid-area: Footer;
     background-color: lightgray;
     height: auto;
+    background-image: linear-gradient(rgba(0, 0, 0, 0.8),rgba(0, 0, 0, 0.8)) ,  url("../resources/footerImg.jpg");
   }
 
 }
@@ -82,7 +92,7 @@ h1, h4, p {
   display: grid;
   width: 1280px;
   grid-template-columns: 1fr;
-  grid-template-rows: 150px 405px 100px;
+  grid-template-rows: 100px 480px 100px;
   gap: 0px 0px;
   grid-template-areas:
     "Header"
@@ -93,7 +103,11 @@ h1, h4, p {
     grid-area: Header;
     background-color: lightgray;
     height: auto;
-    width: 100%
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-image: linear-gradient(rgba(0, 0, 0, 0.8),rgba(0, 0, 0, 0.8)) , url("../resources/headerImg.jpg");
   }
 
   .Main-Panel {
@@ -114,6 +128,7 @@ h1, h4, p {
       flex-direction: column;
       justify-content: flex-start;
       align-items: center;
+      background-image: linear-gradient(rgba(0, 0, 0, 0.8),rgba(0, 0, 0, 0.8)) ,  url("../resources/leftScoreImg.jpg");
     }
 
     .Game-Area {
@@ -135,7 +150,7 @@ h1, h4, p {
       flex-direction: column;
       justify-content: flex-start;
       align-items: center;
-
+      background-image: linear-gradient(rgba(0, 0, 0, 0.8),rgba(0, 0, 0, 0.8)) ,  url("../resources/rightScoreImg.jpg");
     }
   }
   .Footer {
@@ -147,6 +162,7 @@ h1, h4, p {
     justify-content: center;
     align-items: center;
     position: relative;
+    background-image: linear-gradient(rgba(0, 0, 0, 0.8),rgba(0, 0, 0, 0.8)) ,  url("../resources/footerImg.jpg");
 
     #infectedBar {
       background-color: #008A09;
