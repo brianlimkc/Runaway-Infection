@@ -4,6 +4,7 @@
 
 Runaway Infection is a simple web game which simulates the rapid spread of COVID through a population and how hard it can be to contain the spread once it is out of control. 
 
+Play it here! - https://pages.git.generalassemb.ly/brianlimkc/Runaway-Reaction/
 
 
 ### Technical Used
