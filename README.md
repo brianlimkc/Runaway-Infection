@@ -15,6 +15,8 @@ Play it here! - https://pages.git.generalassemb.ly/brianlimkc/Runaway-Reaction/
 
 ### Wireframes
 
+<img src="https://i.imgur.com/beOiuXO.png">
+
 ### User Stories
 
 Users are introduced to a playing area filled with different types of balls:
