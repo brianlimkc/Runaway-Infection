@@ -11,6 +11,7 @@ Play it here! - https://pages.git.generalassemb.ly/brianlimkc/Runaway-Reaction/
 
 - Javascript
 - HTML Canvas
+- CSS
 
 ### Wireframes
 
